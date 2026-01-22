@@ -1,65 +1,95 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { SolarSystem } from '@/components/3d/SolarSystem';
+import { HUD } from '@/components/layout/HUD';
+import { Dashboard } from '@/components/layout/Dashboard';
+import { PlanetSidebar } from '@/components/sidebar/PlanetSidebar';
+import { MissionControl } from '@/components/layout/MissionControl';
+import { Navbar } from '@/components/ui/Navbar';
+import { Education } from '@/components/layout/Education';
+
+type LoadState =
+  | 'INIT'           // Black screen
+  | 'LOADING_ASSETS' // Textures loading
+  | 'READY'          // Fade to 3D scene
+  | 'HUD_ANIMATE'    // UI slides in
+  | 'ACTIVE';        // Fully interactive
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export default function Home() {
+  const [loadState, setLoadState] = useState<LoadState>('INIT');
+  const [loadProgress, setLoadProgress] = useState(0);
+
+  useEffect(() => {
+    const sequence = async () => {
+      // Wait 500ms
+      await delay(500);
+      setLoadState('LOADING_ASSETS');
+
+      // Simulate texture loading with progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 5;
+        setLoadProgress(progress);
+        if (progress >= 100) {
+          clearInterval(interval);
+        }
+      }, 100);
+
+      // Wait for "loading"
+      await delay(2500);
+
+      setLoadState('READY');
+      await delay(500);
+
+      setLoadState('HUD_ANIMATE');
+      await delay(1000);
+
+      setLoadState('ACTIVE');
+    };
+
+    sequence();
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="relative w-full h-screen overflow-hidden bg-void-black">
+      {/* Loading Screen */}
+      {loadState === 'LOADING_ASSETS' && (
+        <div className="absolute inset-0 z-50 bg-void-black flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-orbitron text-cyan-glow mb-4">
+              Initializing Solar System
+            </h2>
+            <div className="w-64 h-2 bg-white/10 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-cyan-glow to-plasma-purple"
+                initial={{ width: 0 }}
+                animate={{ width: `${loadProgress}%` }}
+                transition={{ duration: 0.2 }}
+              />
+            </div>
+            <p className="text-star-white/60 mt-2 font-mono text-sm">{loadProgress}%</p>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      )}
+
+      {/* 3D Solar System */}
+      <SolarSystem loadState={loadState} />
+
+      {/* UI Overlay */}
+      {(loadState === 'HUD_ANIMATE' || loadState === 'ACTIVE') && (
+        <>
+          <Navbar />
+          <HUD isActive={loadState === 'ACTIVE'} />
+          <Dashboard />
+          <PlanetSidebar />
+          <MissionControl />
+          <Education />
+        </>
+      )}
     </div>
   );
 }
