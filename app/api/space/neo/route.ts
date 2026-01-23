@@ -31,11 +31,24 @@ const FALLBACK_NEO_DATA = {
 };
 
 export async function GET(req: NextRequest) {
-    // In a real app, we would use the real NASA API key
-    // const apiKey = process.env.NASA_API_KEY;
+    const apiKey = process.env.NEXT_PUBLIC_NASA_API_KEY;
 
-    // For this prototype, we'll return the fallback data to avoid needing an API key immediately
-    // But the structure is ready for real integration
+    if (!apiKey) {
+        return NextResponse.json(FALLBACK_NEO_DATA);
+    }
 
-    return NextResponse.json(FALLBACK_NEO_DATA);
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const res = await fetch(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${today}&end_date=${today}&api_key=${apiKey}`);
+
+        if (!res.ok) {
+            throw new Error(`NASA API Error: ${res.status}`);
+        }
+
+        const data = await res.json();
+        return NextResponse.json(data);
+    } catch (error) {
+        console.error('Error fetching NEO data:', error);
+        return NextResponse.json(FALLBACK_NEO_DATA);
+    }
 }

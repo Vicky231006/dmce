@@ -25,6 +25,29 @@ const FALLBACK_MARS_DATA = {
 };
 
 export async function GET(req: NextRequest) {
-    // Prototype: Return fallback data
-    return NextResponse.json(FALLBACK_MARS_DATA);
+    const apiKey = process.env.NEXT_PUBLIC_NASA_API_KEY;
+
+    if (!apiKey) {
+        return NextResponse.json(FALLBACK_MARS_DATA);
+    }
+
+    try {
+        // Fetch photos from Curiosity (Sol 1000 is a safe bet for good photos)
+        const res = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&page=1&api_key=${apiKey}`);
+
+        if (!res.ok) {
+            throw new Error(`NASA API Error: ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        if (!data.photos || data.photos.length === 0) {
+            return NextResponse.json(FALLBACK_MARS_DATA);
+        }
+
+        return NextResponse.json(data);
+    } catch (error) {
+        console.error('Error fetching Mars photos:', error);
+        return NextResponse.json(FALLBACK_MARS_DATA);
+    }
 }

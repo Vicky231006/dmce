@@ -20,6 +20,42 @@ interface PlanetData {
 }
 
 export const PLANET_DATA: Record<string, PlanetData> = {
+    sun: {
+        overview: "The Sun is the star at the center of the Solar System. It is a nearly perfect sphere of hot plasma, heated to incandescence by nuclear fusion reactions in its core. The Sun radiates this energy mainly as light, ultraviolet, and infrared radiation, and is the most important source of energy for life on Earth.",
+        type: "Yellow Dwarf Star",
+        diameter: "1.4 million km",
+        mass: "1.989 × 10³⁰ kg",
+        gravity: "274 m/s²",
+        dayLength: "25 Earth days (Equator)",
+        yearLength: "230 million years (Galactic Year)",
+        distanceFromSun: "0 km (Center)",
+        moons: "8 Planets (Satellites)",
+        discovery: "Known since prehistoric times.",
+        facts: [
+            "The Sun accounts for 99.86% of the mass in the solar system",
+            "One million Earths could fit inside the Sun",
+            "The Sun travels at 220 km per second around the Milky Way",
+            "Light from the Sun takes 8 minutes and 20 seconds to reach Earth"
+        ],
+        atmosphere: [
+            { name: "Hydrogen", percentage: 73.46 },
+            { name: "Helium", percentage: 24.85 },
+            { name: "Oxygen", percentage: 0.77 },
+            { name: "Carbon", percentage: 0.29 }
+        ],
+        structure: [
+            { name: "Core", description: "Nuclear fusion reactor (15 million °C)" },
+            { name: "Radiative Zone", description: "Energy travels outwards as photons" },
+            { name: "Convective Zone", description: "Hot plasma rises, cools, and sinks" },
+            { name: "Photosphere", description: "Visible surface (5,500 °C)" },
+            { name: "Corona", description: "Outermost atmosphere (1 million °C)" }
+        ],
+        surfaceComposition: "Composed entirely of hydrogen and helium plasma. There is no solid surface.",
+        temperature: {
+            average: "5,500°C (Surface)",
+            range: "15,000,000°C (Core)"
+        }
+    },
     mercury: {
         overview: "Mercury is the smallest planet in our solar system and the closest to the Sun. Its surface resembles our Moon, covered with impact craters. Despite being the closest planet to the Sun, it's not the hottest due to its lack of atmosphere.",
         type: "Terrestrial",

@@ -79,7 +79,7 @@ export function Planet({
     // We need to conditionally load textures because useTexture throws if file not found
     // Since we know exactly what we have, we can map it.
     const availableTextures = [
-        'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'
+        'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'
     ];
 
     const hasTexture = availableTextures.includes(name.toLowerCase());
@@ -127,7 +127,7 @@ export function Planet({
                         color={hasTexture ? '#ffffff' : color}
                         roughness={hasTexture ? 0.8 : 0.7}
                         metalness={hasTexture ? 0.1 : 0.2}
-                        emissive={hasTexture ? '#000000' : color} // No emissive for textured planets (rely on ambient light)
+                        emissive={hasTexture ? '#000000' : color} // No emissive for textured planets
                         emissiveIntensity={hasTexture ? 0 : (hovered ? 0.5 : 0.15)} // Only show emissive for non-textured
                     />
                 </mesh>

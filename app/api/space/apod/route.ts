@@ -11,6 +11,24 @@ const FALLBACK_APOD = {
 };
 
 export async function GET(req: NextRequest) {
-    // Prototype: Return fallback data
-    return NextResponse.json(FALLBACK_APOD);
+    const apiKey = process.env.NEXT_PUBLIC_NASA_API_KEY;
+
+    if (!apiKey) {
+        console.warn('NASA API key not found, using fallback');
+        return NextResponse.json(FALLBACK_APOD);
+    }
+
+    try {
+        const res = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}`);
+
+        if (!res.ok) {
+            throw new Error(`NASA API Error: ${res.status}`);
+        }
+
+        const data = await res.json();
+        return NextResponse.json(data);
+    } catch (error) {
+        console.error('Error fetching APOD:', error);
+        return NextResponse.json(FALLBACK_APOD);
+    }
 }

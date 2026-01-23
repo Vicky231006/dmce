@@ -51,6 +51,16 @@ function HexButton({
 
 // --- Views ---
 
+// Helper to get texture path
+const getTexturePath = (planetName: string) => {
+    const normalized = planetName.toLowerCase();
+    const available = ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
+    if (available.includes(normalized)) {
+        return `/textures/planets/${normalized}_diffuse.jpg`;
+    }
+    return '/textures/placeholder_planet.jpg';
+};
+
 // Stage 1: Mini Card (Planet Preview)
 function MiniCard({ planet, onExplore }: { planet: string; onExplore: () => void }) {
     return (
@@ -58,7 +68,7 @@ function MiniCard({ planet, onExplore }: { planet: string; onExplore: () => void
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="fixed right-20 top-1/2 -translate-y-1/2 w-[300px] z-50"
+            className="fixed left-20 top-1/2 -translate-y-1/2 w-[300px] z-50"
         >
             <div className="relative bg-deep-space/90 backdrop-blur-xl border border-cyan-glow/30 p-1 clip-corners">
                 {/* Decorative Lines */}
@@ -67,10 +77,12 @@ function MiniCard({ planet, onExplore }: { planet: string; onExplore: () => void
 
                 <div className="bg-black/40 p-6 flex flex-col items-center gap-6">
                     {/* Planet Preview Circle */}
-                    <div className="w-32 h-32 rounded-full bg-gradient-to-br from-gray-800 to-black relative shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-white/10 flex items-center justify-center overflow-hidden">
-                        {/* In a real app, this would be a 3D render or image */}
-                        <div className="w-full h-full bg-[url('/textures/placeholder_planet.jpg')] bg-cover opacity-80" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                    <div className="w-32 h-32 rounded-full bg-black relative shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-white/10 flex items-center justify-center overflow-hidden">
+                        <div
+                            className="w-full h-full bg-cover bg-center opacity-90 transition-transform duration-700 hover:scale-110"
+                            style={{ backgroundImage: `url('${getTexturePath(planet)}')` }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
                         <span className="absolute bottom-4 text-xs font-orbitron text-star-white/60">PREVIEW</span>
                     </div>
 
@@ -111,10 +123,10 @@ function MainMenu({
 
     return (
         <motion.div
-            initial={{ x: 50, opacity: 0 }}
+            initial={{ x: -50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 50, opacity: 0 }}
-            className="fixed right-20 top-1/2 -translate-y-1/2 w-[350px] z-50"
+            exit={{ x: -50, opacity: 0 }}
+            className="fixed left-20 top-1/2 -translate-y-1/2 w-[350px] z-50"
         >
             <div className="bg-deep-space/90 backdrop-blur-xl border border-cyan-glow/30 p-8 clip-corners relative">
                 {/* Decorative Lines */}
@@ -180,10 +192,10 @@ function DetailsView({ planet, view, onBack }: { planet: string; view: 'encyclop
 
     return (
         <motion.div
-            initial={{ x: 100, opacity: 0 }}
+            initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 100, opacity: 0 }}
-            className="fixed right-0 top-0 h-screen w-[450px] z-50 bg-deep-space/95 backdrop-blur-xl border-l border-cyan-glow/30"
+            exit={{ x: -100, opacity: 0 }}
+            className="fixed left-0 top-0 h-screen w-[450px] z-50 bg-deep-space/95 backdrop-blur-xl border-r border-cyan-glow/30"
         >
             {/* Header with Integrated Back Button */}
             <div className="relative p-8 border-b border-cyan-glow/20 bg-black/40 flex items-center">
@@ -297,7 +309,10 @@ function PlanetSwitcher({ onSelect, onBack }: { onSelect: (planet: string) => vo
                             onClick={() => onSelect(p.name)}
                             className="group relative aspect-square bg-white/5 border border-white/10 hover:border-cyan-glow/50 hover:bg-cyan-glow/10 rounded-xl flex flex-col items-center justify-center gap-4 transition-all"
                         >
-                            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gray-700 to-black shadow-lg group-hover:scale-110 transition-transform duration-300" />
+                            <div
+                                className="w-16 h-16 rounded-full bg-black shadow-lg group-hover:scale-110 transition-transform duration-300 bg-cover bg-center border border-white/20"
+                                style={{ backgroundImage: `url('${getTexturePath(p.name)}')` }}
+                            />
                             <div className="text-center">
                                 <div className="font-orbitron text-cyan-glow text-sm tracking-wider">{p.name.toUpperCase()}</div>
                                 <div className="text-[10px] text-star-white/50 font-mono mt-1">{p.type.toUpperCase()}</div>

@@ -6,7 +6,8 @@ import { SolarSystem } from '@/components/3d/SolarSystem';
 import { HUD } from '@/components/layout/HUD';
 import { Dashboard } from '@/components/layout/Dashboard';
 import { PlanetSidebar } from '@/components/sidebar/PlanetSidebar';
-import { MissionControl } from '@/components/layout/MissionControl';
+import { MissionTimeline } from '@/components/layout/MissionTimeline';
+import { AIChat } from '@/components/layout/AIChat';
 import { Navbar } from '@/components/ui/Navbar';
 import { Education } from '@/components/layout/Education';
 
@@ -86,8 +87,9 @@ export default function Home() {
           <HUD isActive={loadState === 'ACTIVE'} />
           <Dashboard />
           <PlanetSidebar />
-          <MissionControl />
+          <MissionTimeline />
           <Education />
+          <AIChat />
         </>
       )}
     </div>

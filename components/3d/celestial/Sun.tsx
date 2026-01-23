@@ -1,13 +1,23 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useTexture } from '@react-three/drei';
+import { useSolarSystemStore } from '@/lib/store';
 
 export function Sun() {
     const meshRef = useRef<THREE.Mesh>(null);
+    const groupRef = useRef<THREE.Group>(null);
     const sunTexture = useTexture('/textures/planets/sun_diffuse.jpg');
+    const { registerPlanet } = useSolarSystemStore();
+    const [hovered, setHovered] = useState(false);
+
+    useEffect(() => {
+        if (groupRef.current) {
+            registerPlanet('Sun', groupRef.current);
+        }
+    }, [registerPlanet]);
 
     // Slow rotation
     useFrame((state, delta) => {
@@ -16,10 +26,22 @@ export function Sun() {
         }
     });
 
+    // Hover effect
+    useEffect(() => {
+        if (meshRef.current) {
+            document.body.style.cursor = hovered ? 'pointer' : 'auto';
+        }
+    }, [hovered]);
+
     return (
-        <group>
+        <group ref={groupRef}>
             {/* Main Sun */}
-            <mesh ref={meshRef}>
+            <mesh
+                ref={meshRef}
+                onPointerEnter={() => setHovered(true)}
+                onPointerLeave={() => setHovered(false)}
+                userData={{ name: 'Sun', type: 'star' }}
+            >
                 <sphereGeometry args={[8, 64, 64]} />
                 <meshBasicMaterial
                     map={sunTexture}

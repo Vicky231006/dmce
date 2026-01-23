@@ -151,24 +151,31 @@ export function checkRateLimit(key: string, limit: number, windowMs: number): bo
     return true;
 }
 
-// Cache helper with fallback
+// Cache helper with fallback and timeout
 export async function getCachedData<T>(
     key: string,
     fetcher: () => Promise<T>,
     ttl: number = 1800000, // 30min default
-    fallback?: T
+    fallback?: T,
+    timeoutMs: number = 5000 // 5s default timeout
 ): Promise<T> {
     try {
         // Check IndexedDB
         const cached = await spaceCache.get<T>(key);
         if (cached) return cached;
 
-        // Fetch fresh
-        const fresh = await fetcher();
+        // Fetch fresh with timeout
+        const fetchPromise = fetcher();
+        const timeoutPromise = new Promise<T>((_, reject) =>
+            setTimeout(() => reject(new Error('Request timed out')), timeoutMs)
+        );
+
+        const fresh = await Promise.race([fetchPromise, timeoutPromise]);
+
         await spaceCache.set(key, fresh, ttl);
         return fresh;
     } catch (error) {
-        console.error(`Cache miss for ${key}:`, error);
+        console.error(`Cache miss/error for ${key}:`, error);
         if (fallback) return fallback;
         throw error;
     }

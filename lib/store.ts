@@ -4,12 +4,20 @@ import * as THREE from 'three';
 // --- App State ---
 interface AppState {
     mode: 'explore' | 'dashboard' | 'mission' | 'education';
+    timelineIndex: number;
+    isNeoOverlayOpen: boolean;
     setMode: (mode: AppState['mode']) => void;
+    setTimelineIndex: (index: number) => void;
+    setNeoOverlayOpen: (isOpen: boolean) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
     mode: 'explore',
+    timelineIndex: 0,
+    isNeoOverlayOpen: false,
     setMode: (mode) => set({ mode }),
+    setTimelineIndex: (index) => set({ timelineIndex: index }),
+    setNeoOverlayOpen: (isOpen) => set({ isNeoOverlayOpen: isOpen }),
 }));
 
 // --- Time Control State ---
