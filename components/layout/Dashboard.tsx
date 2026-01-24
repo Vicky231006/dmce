@@ -12,8 +12,10 @@ import { useAppStore } from '@/lib/store';
 
 import { useState, useEffect } from 'react';
 import { getCachedData } from '@/lib/cache';
-import { X, Calendar, ChevronLeft, ChevronRight, Telescope } from 'lucide-react';
+
+import { X, Calendar, ChevronLeft, ChevronRight, Telescope, Sparkles, Rocket, LayoutDashboard, MessageSquare, Globe } from 'lucide-react';
 import { CALENDAR_DATA } from '@/lib/calendarData';
+import { COSMIC_WEATHER_DATA, SATELLITE_DATA } from '@/lib/dashboardData';
 
 export function Dashboard() {
     const { mode, isNeoOverlayOpen, setNeoOverlayOpen } = useAppStore();
@@ -27,6 +29,9 @@ export function Dashboard() {
     const [selectedApod, setSelectedApod] = useState<any>(null);
     const [showCalendar, setShowCalendar] = useState(false);
     const [calendarYear, setCalendarYear] = useState(2026);
+    const [selectedCalendarEvent, setSelectedCalendarEvent] = useState<any>(null);
+    const [showCosmicWeather, setShowCosmicWeather] = useState(false);
+    const [showSatellite, setShowSatellite] = useState(false);
 
     const fetchData = async () => {
         // NEO Data (Cache for 1 hour)
@@ -258,19 +263,62 @@ export function Dashboard() {
                                             </div>
                                         </div>
                                         <p className="text-xs text-star-white/60">Rover: {marsData.photos[0].rover.name} • Sol: {marsData.photos[0].sol}</p>
-
-                                        {/* Calendar Button */}
-                                        <button
-                                            onClick={() => setShowCalendar(true)}
-                                            className="w-full mt-4 py-3 bg-white/5 hover:bg-cyan-glow/10 border border-white/10 hover:border-cyan-glow/50 rounded flex items-center justify-center gap-2 transition-all group"
-                                        >
-                                            <Calendar size={16} className="text-cyan-glow" />
-                                            <span className="font-orbitron text-sm text-star-white group-hover:text-white tracking-wider">ASTRONOMICAL CALENDAR</span>
-                                        </button>
                                     </div>
                                 ) : (
                                     <p className="text-sm text-star-white/60 animate-pulse">Establishing link...</p>
                                 )}
+                            </div>
+
+                            {/* Astronomical Calendar Panel */}
+                            <div className="p-6 rounded-lg bg-white/5 border border-white/10">
+                                <h3 className="text-lg font-orbitron text-star-white mb-2">Astronomical Calendar</h3>
+                                <p className="text-xs text-star-white/60 mb-4">Track upcoming celestial events, eclipses, and meteor showers.</p>
+                                <button
+                                    onClick={() => setShowCalendar(true)}
+                                    className="w-full py-3 bg-white/5 hover:bg-cyan-glow/10 border border-white/10 hover:border-cyan-glow/50 rounded flex items-center justify-center gap-2 transition-all group"
+                                >
+                                    <Calendar size={16} className="text-cyan-glow" />
+                                    <span className="font-orbitron text-sm text-star-white group-hover:text-white tracking-wider">VIEW CALENDAR</span>
+                                </button>
+                            </div>
+
+                            {/* Cosmic Weather Panel */}
+                            <div className="p-6 rounded-lg bg-white/5 border border-white/10">
+                                <h3 className="text-lg font-orbitron text-star-white mb-2">Real-time Cosmic Weather</h3>
+                                <div className="grid grid-cols-3 gap-2 mb-4">
+                                    <div className="bg-black/20 p-2 rounded border border-white/5 text-center">
+                                        <p className="text-[10px] text-star-white/40 uppercase">SOLAR</p>
+                                        <p className="text-xs font-bold text-yellow-400">{COSMIC_WEATHER_DATA.solarStorms.status}</p>
+                                    </div>
+                                    <div className="bg-black/20 p-2 rounded border border-white/5 text-center">
+                                        <p className="text-[10px] text-star-white/40 uppercase">AURORA</p>
+                                        <p className="text-xs font-bold text-green-400">{COSMIC_WEATHER_DATA.auroraForecast.probability}</p>
+                                    </div>
+                                    <div className="bg-black/20 p-2 rounded border border-white/5 text-center">
+                                        <p className="text-[10px] text-star-white/40 uppercase">RAD</p>
+                                        <p className="text-xs font-bold text-blue-400">{COSMIC_WEATHER_DATA.radiation.level}</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => setShowCosmicWeather(true)}
+                                    className="w-full py-3 bg-white/5 hover:bg-cyan-glow/10 border border-white/10 hover:border-cyan-glow/50 rounded flex items-center justify-center gap-2 transition-all group"
+                                >
+                                    <Sparkles size={16} className="text-cyan-glow" />
+                                    <span className="font-orbitron text-sm text-star-white group-hover:text-white tracking-wider">WEATHER DATA</span>
+                                </button>
+                            </div>
+
+                            {/* Satellite Contributions Panel */}
+                            <div className="p-6 rounded-lg bg-white/5 border border-white/10">
+                                <h3 className="text-lg font-orbitron text-star-white mb-2">Satellite Contributions</h3>
+                                <p className="text-xs text-star-white/60 mb-4">Real-world impact of space technology on Earth.</p>
+                                <button
+                                    onClick={() => setShowSatellite(true)}
+                                    className="w-full py-3 bg-white/5 hover:bg-cyan-glow/10 border border-white/10 hover:border-cyan-glow/50 rounded flex items-center justify-center gap-2 transition-all group"
+                                >
+                                    <Rocket size={16} className="text-cyan-glow" />
+                                    <span className="font-orbitron text-sm text-star-white group-hover:text-white tracking-wider">VIEW IMPACT</span>
+                                </button>
                             </div>
                         </div>
                     </motion.div>
@@ -356,7 +404,7 @@ export function Dashboard() {
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
                             >
-                                <div className="w-full max-w-4xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[80vh]">
+                                <div className="w-full max-w-4xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[80vh] relative">
                                     {/* Header */}
                                     <div className="p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
                                         <div className="flex items-center gap-4">
@@ -372,18 +420,23 @@ export function Dashboard() {
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-4 bg-black/30 rounded-full p-1 border border-white/10">
-                                            <button
-                                                onClick={() => setCalendarYear(2025)}
-                                                className={`px-4 py-1.5 rounded-full text-sm font-orbitron transition-all ${calendarYear === 2025 ? 'bg-cyan-glow text-black' : 'text-star-white/60 hover:text-white'}`}
-                                            >
-                                                2025
-                                            </button>
-                                            <button
-                                                onClick={() => setCalendarYear(2026)}
-                                                className={`px-4 py-1.5 rounded-full text-sm font-orbitron transition-all ${calendarYear === 2026 ? 'bg-cyan-glow text-black' : 'text-star-white/60 hover:text-white'}`}
-                                            >
-                                                2026
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-4 bg-black/30 rounded-full p-1 border border-white/10">
+                                                <button
+                                                    onClick={() => setCalendarYear(2025)}
+                                                    className={`px-4 py-1.5 rounded-full text-sm font-orbitron transition-all ${calendarYear === 2025 ? 'bg-cyan-glow text-black' : 'text-star-white/60 hover:text-white'}`}
+                                                >
+                                                    2025
+                                                </button>
+                                                <button
+                                                    onClick={() => setCalendarYear(2026)}
+                                                    className={`px-4 py-1.5 rounded-full text-sm font-orbitron transition-all ${calendarYear === 2026 ? 'bg-cyan-glow text-black' : 'text-star-white/60 hover:text-white'}`}
+                                                >
+                                                    2026
+                                                </button>
+                                            </div>
+                                            <button className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors" title="Ask AI">
+                                                <MessageSquare size={20} />
                                             </button>
                                         </div>
                                     </div>
@@ -396,7 +449,8 @@ export function Dashboard() {
                                                 initial={{ opacity: 0, y: 20 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 transition={{ delay: idx * 0.1 }}
-                                                className="group relative bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-glow/50 rounded-xl p-6 transition-all"
+                                                onClick={() => setSelectedCalendarEvent(event)}
+                                                className="group relative bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-glow/50 rounded-xl p-6 transition-all cursor-pointer"
                                             >
                                                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-glow to-transparent rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -426,6 +480,214 @@ export function Dashboard() {
                                                 </div>
                                             </motion.div>
                                         ))}
+                                    </div>
+
+                                    {/* Visibility Map Overlay */}
+                                    <AnimatePresence>
+                                        {selectedCalendarEvent && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 50 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: 50 }}
+                                                className="absolute inset-0 z-50 bg-deep-space/95 backdrop-blur-xl flex flex-col"
+                                            >
+                                                <div className="p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
+                                                    <div className="flex items-center gap-4">
+                                                        <button
+                                                            onClick={() => setSelectedCalendarEvent(null)}
+                                                            className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors"
+                                                        >
+                                                            <ChevronLeft size={24} />
+                                                        </button>
+                                                        <div>
+                                                            <h2 className="text-xl font-orbitron text-white tracking-widest">VISIBILITY MAP</h2>
+                                                            <p className="text-xs text-cyan-glow font-mono tracking-[0.3em]">{selectedCalendarEvent.title}</p>
+                                                        </div>
+                                                    </div>
+                                                    <button className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors" title="Ask AI">
+                                                        <MessageSquare size={20} />
+                                                    </button>
+                                                </div>
+                                                <div className="flex-1 flex items-center justify-center p-8">
+                                                    <div className="text-center space-y-4">
+                                                        <Globe size={64} className="mx-auto text-cyan-glow animate-pulse" />
+                                                        <p className="text-star-white/80">Interactive visibility map loading...</p>
+                                                        <p className="text-xs text-star-white/40">Showing optimal viewing locations for {new Date(selectedCalendarEvent.date).toLocaleDateString()}</p>
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Cosmic Weather Overlay */}
+                    <AnimatePresence>
+                        {showCosmicWeather && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+                            >
+                                <div className="w-full max-w-4xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[80vh]">
+                                    <div className="p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <button
+                                                onClick={() => setShowCosmicWeather(false)}
+                                                className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors"
+                                            >
+                                                <ChevronLeft size={24} />
+                                            </button>
+                                            <div>
+                                                <h2 className="text-2xl font-orbitron text-white tracking-widest">COSMIC WEATHER</h2>
+                                                <p className="text-xs text-cyan-glow font-mono tracking-[0.3em]">REAL-TIME ALERTS</p>
+                                            </div>
+                                        </div>
+                                        <button className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors" title="Ask AI">
+                                            <MessageSquare size={20} />
+                                        </button>
+                                    </div>
+                                    <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        {/* Solar Storms */}
+                                        <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-yellow-400/50 transition-colors">
+                                            <h3 className="text-lg font-orbitron text-yellow-400 mb-4">Solar Storms</h3>
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <p className="text-xs text-star-white/60 uppercase">STATUS</p>
+                                                    <p className="text-2xl font-bold text-white">{COSMIC_WEATHER_DATA.solarStorms.status}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs text-star-white/60 uppercase">KP INDEX</p>
+                                                    <p className="text-xl font-mono text-white">{COSMIC_WEATHER_DATA.solarStorms.kpIndex}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs text-star-white/60 uppercase">LAST FLARE</p>
+                                                    <p className="text-sm text-white">{COSMIC_WEATHER_DATA.solarStorms.lastFlare}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Aurora Forecast */}
+                                        <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-green-400/50 transition-colors">
+                                            <h3 className="text-lg font-orbitron text-green-400 mb-4">Aurora Forecast</h3>
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <p className="text-xs text-star-white/60 uppercase">VISIBILITY</p>
+                                                    <p className="text-xl font-bold text-white">{COSMIC_WEATHER_DATA.auroraForecast.visibility}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs text-star-white/60 uppercase">PROBABILITY</p>
+                                                    <p className="text-2xl font-mono text-white">{COSMIC_WEATHER_DATA.auroraForecast.probability}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs text-star-white/60 uppercase">NEXT PEAK</p>
+                                                    <p className="text-sm text-white">{COSMIC_WEATHER_DATA.auroraForecast.nextPeak}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Radiation Alerts */}
+                                        <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-blue-400/50 transition-colors">
+                                            <h3 className="text-lg font-orbitron text-blue-400 mb-4">Radiation</h3>
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <p className="text-xs text-star-white/60 uppercase">LEVEL</p>
+                                                    <p className="text-2xl font-bold text-white">{COSMIC_WEATHER_DATA.radiation.level}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs text-star-white/60 uppercase">FLUX</p>
+                                                    <p className="text-sm font-mono text-white">{COSMIC_WEATHER_DATA.radiation.flux}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs text-star-white/60 uppercase">RISK</p>
+                                                    <p className="text-xl text-white">{COSMIC_WEATHER_DATA.radiation.risk}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Satellite Contributions Overlay */}
+                    <AnimatePresence>
+                        {showSatellite && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+                            >
+                                <div className="w-full max-w-5xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+                                    <div className="p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <button
+                                                onClick={() => setShowSatellite(false)}
+                                                className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors"
+                                            >
+                                                <ChevronLeft size={24} />
+                                            </button>
+                                            <div>
+                                                <h2 className="text-2xl font-orbitron text-white tracking-widest">SATELLITE CONTRIBUTIONS</h2>
+                                                <p className="text-xs text-cyan-glow font-mono tracking-[0.3em]">EARTH IMPACT ANALYSIS</p>
+                                            </div>
+                                        </div>
+                                        <button className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors" title="Ask AI">
+                                            <MessageSquare size={20} />
+                                        </button>
+                                    </div>
+
+                                    <div className="flex-1 overflow-y-auto p-8">
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                                            {/* Impact Cards */}
+                                            <div className="space-y-4">
+                                                <h3 className="text-lg font-orbitron text-star-white mb-4">Key Impact Areas</h3>
+                                                {SATELLITE_DATA.contributions.map((item) => (
+                                                    <div key={item.id} className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-glow/30 transition-colors">
+                                                        <div className="flex justify-between items-start mb-2">
+                                                            <h4 className="font-bold text-white">{item.title}</h4>
+                                                            <span className={`text-xs px-2 py-0.5 rounded ${item.trend === 'up' ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white'}`}>
+                                                                {item.trend === 'up' ? '▲ POSITIVE' : '● STABLE'}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-sm text-star-white/80 mb-3">{item.description}</p>
+                                                        <p className="text-xl font-mono text-cyan-glow">{item.value}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            {/* Graph Visualization (Mock) */}
+                                            <div className="bg-white/5 border border-white/10 rounded-xl p-6 flex flex-col">
+                                                <h3 className="text-lg font-orbitron text-star-white mb-6">Global Coverage Trend</h3>
+                                                <div className="flex-1 flex items-end justify-between gap-4 px-4 pb-4 border-b border-white/10 relative">
+                                                    {/* Grid lines */}
+                                                    <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
+                                                        <div className="w-full h-px bg-white" />
+                                                        <div className="w-full h-px bg-white" />
+                                                        <div className="w-full h-px bg-white" />
+                                                        <div className="w-full h-px bg-white" />
+                                                    </div>
+
+                                                    {SATELLITE_DATA.graphData.map((data, idx) => (
+                                                        <div key={idx} className="flex flex-col items-center gap-2 group w-full">
+                                                            <div
+                                                                className="w-full bg-cyan-glow/20 border-t border-x border-cyan-glow/50 rounded-t-sm relative group-hover:bg-cyan-glow/40 transition-all"
+                                                                style={{ height: `${data.coverage}%` }}
+                                                            >
+                                                                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    {data.coverage}%
+                                                                </div>
+                                                            </div>
+                                                            <span className="text-xs text-star-white/60">{data.year}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </motion.div>
@@ -518,7 +780,8 @@ export function Dashboard() {
                         )}
                     </AnimatePresence>
                 </>
-            )}
-        </AnimatePresence>
+            )
+            }
+        </AnimatePresence >
     );
 }
