@@ -2,36 +2,34 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
-// We'll implement these panels next
-// import { NEOPanel } from '@/components/panels/NEOPanel';
-// import { ISSPanel } from '@/components/panels/ISSPanel';
-// import { MarsPanel } from '@/components/panels/MarsPanel';
-// import { APODPanel } from '@/components/panels/APODPanel';
-// import { LaunchesPanel } from '@/components/panels/LaunchesPanel';
-// import { NewsPanel } from '@/components/panels/NewsPanel';
-
 import { useState, useEffect } from 'react';
 import { getCachedData } from '@/lib/cache';
-
-import { X, Calendar, ChevronLeft, ChevronRight, Telescope, Sparkles, Rocket, LayoutDashboard, MessageSquare, Globe } from 'lucide-react';
+import { X, Calendar, ChevronLeft, ChevronRight, Telescope, Sparkles, Rocket, LayoutDashboard, MessageSquare, Globe, Thermometer, Flame, Sprout, Activity } from 'lucide-react';
 import { CALENDAR_DATA } from '@/lib/calendarData';
 import { COSMIC_WEATHER_DATA, SATELLITE_DATA } from '@/lib/dashboardData';
 
 export function Dashboard() {
-    const { mode, isNeoOverlayOpen, setNeoOverlayOpen } = useAppStore();
+    const {
+        mode,
+        isNeoOverlayOpen,
+        setNeoOverlayOpen,
+        dashboardOverlay,
+        setDashboardOverlay,
+        selectedSatelliteImpact,
+        setSelectedSatelliteImpact
+    } = useAppStore();
+
     const [neoData, setNeoData] = useState<any>(null);
     const [issData, setIssData] = useState<any>(null);
     const [marsData, setMarsData] = useState<any>(null);
     const [apodData, setApodData] = useState<any>(null);
+    const [weatherData, setWeatherData] = useState<any>(null);
 
-    // Overlay States
+    // Local Overlay States
     const [selectedMarsPhoto, setSelectedMarsPhoto] = useState<string | null>(null);
     const [selectedApod, setSelectedApod] = useState<any>(null);
-    const [showCalendar, setShowCalendar] = useState(false);
     const [calendarYear, setCalendarYear] = useState(2026);
-    const [selectedCalendarEvent, setSelectedCalendarEvent] = useState<any>(null);
-    const [showCosmicWeather, setShowCosmicWeather] = useState(false);
-    const [showSatellite, setShowSatellite] = useState(false);
+    const [hoveredCalendarEvent, setHoveredCalendarEvent] = useState<number | null>(null);
 
     const fetchData = async () => {
         // NEO Data (Cache for 1 hour)
@@ -43,9 +41,9 @@ export function Dashboard() {
                     if (!res.ok) throw new Error('Failed to fetch NEO');
                     return res.json();
                 },
-                3600000, // 1 hour TTL
-                { element_count: 0, near_earth_objects: {} }, // Fallback
-                10000 // 10s timeout
+                3600000,
+                { element_count: 0, near_earth_objects: {} },
+                10000
             );
             setNeoData(neo);
         } catch (e) { console.error(e); }
@@ -59,14 +57,14 @@ export function Dashboard() {
                     if (!res.ok) throw new Error('Failed to fetch APOD');
                     return res.json();
                 },
-                86400000, // 24 hours TTL
-                null, // No fallback needed initially, UI handles null
+                86400000,
+                null,
                 10000
             );
             setApodData(apod);
         } catch (e) { console.error(e); }
 
-        // ISS Data (Cache for 1 minute - essentially polling)
+        // ISS Data (Cache for 1 minute)
         try {
             const iss = await getCachedData(
                 'iss-data',
@@ -75,8 +73,8 @@ export function Dashboard() {
                     if (!res.ok) throw new Error('Failed to fetch ISS');
                     return res.json();
                 },
-                60000, // 1 min TTL
-                { latitude: 51.5074, longitude: -0.1278, altitude: 408, velocity: 27580 }, // Fallback (London approx)
+                60000,
+                { latitude: 51.5074, longitude: -0.1278, altitude: 408, velocity: 27580 },
                 10000
             );
             setIssData(iss);
@@ -91,28 +89,51 @@ export function Dashboard() {
                     if (!res.ok) throw new Error('Failed to fetch Mars');
                     return res.json();
                 },
-                86400000, // 24 hours TTL
-                { photos: [] }, // Fallback
+                86400000,
+                { photos: [] },
                 10000
             );
             setMarsData(mars);
+        } catch (e) { console.error(e); }
+
+        // Cosmic Weather Data (Cache for 1 minute)
+        try {
+            const weather = await getCachedData(
+                'weather-data',
+                async () => {
+                    const res = await fetch('/api/space/weather');
+                    if (!res.ok) throw new Error('Failed to fetch Weather');
+                    return res.json();
+                },
+                60000,
+                COSMIC_WEATHER_DATA,
+                10000
+            );
+            setWeatherData(weather);
         } catch (e) { console.error(e); }
     };
 
     useEffect(() => {
         if (mode === 'dashboard') {
             fetchData();
-            // Poll every minute
             const interval = setInterval(fetchData, 60000);
             return () => clearInterval(interval);
         }
     }, [mode]);
 
+    // Helper to get icon for satellite impact
+    const getImpactIcon = (title: string) => {
+        if (title.toLowerCase().includes('climate')) return <Thermometer size={80} className="text-cyan-glow opacity-50" />;
+        if (title.toLowerCase().includes('disaster') || title.toLowerCase().includes('fire')) return <Flame size={80} className="text-red-400 opacity-50" />;
+        if (title.toLowerCase().includes('agriculture') || title.toLowerCase().includes('crop')) return <Sprout size={80} className="text-green-400 opacity-50" />;
+        return <Activity size={80} className="text-cyan-glow opacity-50" />;
+    };
+
     return (
         <AnimatePresence>
             {mode === 'dashboard' && (
                 <>
-                    {/* Backdrop to block canvas interaction */}
+                    {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -120,6 +141,7 @@ export function Dashboard() {
                         className="fixed inset-0 z-10 bg-black/20 backdrop-blur-sm"
                     />
 
+                    {/* Main Dashboard Sidebar */}
                     <motion.div
                         initial={{ x: 400, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
@@ -223,7 +245,7 @@ export function Dashboard() {
                                                 <iframe
                                                     src={apodData.url}
                                                     title={apodData.title}
-                                                    className="w-full h-full pointer-events-none" // Disable interaction in preview
+                                                    className="w-full h-full pointer-events-none"
                                                     allowFullScreen
                                                 />
                                             )}
@@ -274,7 +296,7 @@ export function Dashboard() {
                                 <h3 className="text-lg font-orbitron text-star-white mb-2">Astronomical Calendar</h3>
                                 <p className="text-xs text-star-white/60 mb-4">Track upcoming celestial events, eclipses, and meteor showers.</p>
                                 <button
-                                    onClick={() => setShowCalendar(true)}
+                                    onClick={() => setDashboardOverlay('calendar')}
                                     className="w-full py-3 bg-white/5 hover:bg-cyan-glow/10 border border-white/10 hover:border-cyan-glow/50 rounded flex items-center justify-center gap-2 transition-all group"
                                 >
                                     <Calendar size={16} className="text-cyan-glow" />
@@ -285,22 +307,26 @@ export function Dashboard() {
                             {/* Cosmic Weather Panel */}
                             <div className="p-6 rounded-lg bg-white/5 border border-white/10">
                                 <h3 className="text-lg font-orbitron text-star-white mb-2">Real-time Cosmic Weather</h3>
-                                <div className="grid grid-cols-3 gap-2 mb-4">
-                                    <div className="bg-black/20 p-2 rounded border border-white/5 text-center">
-                                        <p className="text-[10px] text-star-white/40 uppercase">SOLAR</p>
-                                        <p className="text-xs font-bold text-yellow-400">{COSMIC_WEATHER_DATA.solarStorms.status}</p>
+                                {weatherData ? (
+                                    <div className="grid grid-cols-3 gap-2 mb-4">
+                                        <div className="bg-black/20 p-2 rounded border border-white/5 text-center">
+                                            <p className="text-[10px] text-star-white/40 uppercase">SOLAR</p>
+                                            <p className="text-xs font-bold text-yellow-400">{weatherData.solarStorms.status}</p>
+                                        </div>
+                                        <div className="bg-black/20 p-2 rounded border border-white/5 text-center">
+                                            <p className="text-[10px] text-star-white/40 uppercase">AURORA</p>
+                                            <p className="text-xs font-bold text-green-400">{weatherData.auroraForecast.probability}</p>
+                                        </div>
+                                        <div className="bg-black/20 p-2 rounded border border-white/5 text-center">
+                                            <p className="text-[10px] text-star-white/40 uppercase">RAD</p>
+                                            <p className="text-xs font-bold text-blue-400">{weatherData.radiation.level}</p>
+                                        </div>
                                     </div>
-                                    <div className="bg-black/20 p-2 rounded border border-white/5 text-center">
-                                        <p className="text-[10px] text-star-white/40 uppercase">AURORA</p>
-                                        <p className="text-xs font-bold text-green-400">{COSMIC_WEATHER_DATA.auroraForecast.probability}</p>
-                                    </div>
-                                    <div className="bg-black/20 p-2 rounded border border-white/5 text-center">
-                                        <p className="text-[10px] text-star-white/40 uppercase">RAD</p>
-                                        <p className="text-xs font-bold text-blue-400">{COSMIC_WEATHER_DATA.radiation.level}</p>
-                                    </div>
-                                </div>
+                                ) : (
+                                    <p className="text-sm text-star-white/60 animate-pulse mb-4">Scanning space weather...</p>
+                                )}
                                 <button
-                                    onClick={() => setShowCosmicWeather(true)}
+                                    onClick={() => setDashboardOverlay('weather')}
                                     className="w-full py-3 bg-white/5 hover:bg-cyan-glow/10 border border-white/10 hover:border-cyan-glow/50 rounded flex items-center justify-center gap-2 transition-all group"
                                 >
                                     <Sparkles size={16} className="text-cyan-glow" />
@@ -313,7 +339,7 @@ export function Dashboard() {
                                 <h3 className="text-lg font-orbitron text-star-white mb-2">Satellite Contributions</h3>
                                 <p className="text-xs text-star-white/60 mb-4">Real-world impact of space technology on Earth.</p>
                                 <button
-                                    onClick={() => setShowSatellite(true)}
+                                    onClick={() => setDashboardOverlay('satellite')}
                                     className="w-full py-3 bg-white/5 hover:bg-cyan-glow/10 border border-white/10 hover:border-cyan-glow/50 rounded flex items-center justify-center gap-2 transition-all group"
                                 >
                                     <Rocket size={16} className="text-cyan-glow" />
@@ -397,7 +423,7 @@ export function Dashboard() {
 
                     {/* Calendar Overlay */}
                     <AnimatePresence>
-                        {showCalendar && (
+                        {dashboardOverlay === 'calendar' && (
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -409,7 +435,7 @@ export function Dashboard() {
                                     <div className="p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
                                         <div className="flex items-center gap-4">
                                             <button
-                                                onClick={() => setShowCalendar(false)}
+                                                onClick={() => setDashboardOverlay('none')}
                                                 className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors"
                                             >
                                                 <ChevronLeft size={24} />
@@ -435,89 +461,68 @@ export function Dashboard() {
                                                     2026
                                                 </button>
                                             </div>
-                                            <button className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors" title="Ask AI">
-                                                <MessageSquare size={20} />
-                                            </button>
                                         </div>
                                     </div>
+                                </div>
 
-                                    {/* Content */}
-                                    <div className="flex-1 overflow-y-auto p-8 space-y-4">
-                                        {CALENDAR_DATA[calendarYear]?.map((event, idx) => (
-                                            <motion.div
-                                                key={idx}
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ delay: idx * 0.1 }}
-                                                onClick={() => setSelectedCalendarEvent(event)}
-                                                className="group relative bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-glow/50 rounded-xl p-6 transition-all cursor-pointer"
-                                            >
-                                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-glow to-transparent rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                                {/* Content */}
+                                <div className="flex-1 overflow-y-auto p-8 space-y-4">
+                                    {CALENDAR_DATA[calendarYear]?.map((event, idx) => (
+                                        <motion.div
+                                            key={idx}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: idx * 0.1 }}
+                                            onMouseEnter={() => setHoveredCalendarEvent(idx)}
+                                            onMouseLeave={() => setHoveredCalendarEvent(null)}
+                                            className="group relative bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-glow/50 rounded-xl p-6 transition-all cursor-default"
+                                        >
+                                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-glow to-transparent rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                                                <div className="flex flex-col md:flex-row md:items-center gap-6">
-                                                    <div className="flex-shrink-0 w-24 text-center">
-                                                        <span className="block text-3xl font-bold text-white">{new Date(event.date).getDate()}</span>
-                                                        <span className="text-xs font-orbitron text-cyan-glow uppercase">{new Date(event.date).toLocaleString('default', { month: 'short' })}</span>
-                                                    </div>
-
-                                                    <div className="flex-1">
-                                                        <div className="flex items-center gap-3 mb-2">
-                                                            <h3 className="text-xl font-orbitron text-white">{event.title}</h3>
-                                                            <span className={`text-[10px] px-2 py-0.5 rounded border ${event.type === 'eclipse' ? 'border-purple-500 text-purple-400 bg-purple-500/10' :
-                                                                event.type === 'meteor-shower' ? 'border-blue-500 text-blue-400 bg-blue-500/10' :
-                                                                    event.type === 'mission' ? 'border-green-500 text-green-400 bg-green-500/10' :
-                                                                        'border-gray-500 text-gray-400 bg-gray-500/10'
-                                                                } uppercase tracking-wider`}>
-                                                                {event.type.replace('-', ' ')}
-                                                            </span>
-                                                        </div>
-                                                        <p className="text-star-white/80 leading-relaxed">{event.description}</p>
-                                                    </div>
-
-                                                    <div className="flex-shrink-0">
-                                                        <Telescope className="text-white/20 group-hover:text-cyan-glow transition-colors" size={32} />
-                                                    </div>
+                                            <div className="flex flex-col md:flex-row md:items-center gap-6">
+                                                <div className="flex-shrink-0 w-24 text-center">
+                                                    <span className="block text-3xl font-bold text-white">{new Date(event.date).getDate()}</span>
+                                                    <span className="text-xs font-orbitron text-cyan-glow uppercase">{new Date(event.date).toLocaleString('default', { month: 'short' })}</span>
                                                 </div>
-                                            </motion.div>
-                                        ))}
-                                    </div>
 
-                                    {/* Visibility Map Overlay */}
-                                    <AnimatePresence>
-                                        {selectedCalendarEvent && (
-                                            <motion.div
-                                                initial={{ opacity: 0, y: 50 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: 50 }}
-                                                className="absolute inset-0 z-50 bg-deep-space/95 backdrop-blur-xl flex flex-col"
-                                            >
-                                                <div className="p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
-                                                    <div className="flex items-center gap-4">
-                                                        <button
-                                                            onClick={() => setSelectedCalendarEvent(null)}
-                                                            className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors"
-                                                        >
-                                                            <ChevronLeft size={24} />
-                                                        </button>
-                                                        <div>
-                                                            <h2 className="text-xl font-orbitron text-white tracking-widest">VISIBILITY MAP</h2>
-                                                            <p className="text-xs text-cyan-glow font-mono tracking-[0.3em]">{selectedCalendarEvent.title}</p>
-                                                        </div>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-3 mb-2">
+                                                        <h3 className="text-xl font-orbitron text-white">{event.title}</h3>
+                                                        <span className={`text-[10px] px-2 py-0.5 rounded border ${event.type === 'eclipse' ? 'border-purple-500 text-purple-400 bg-purple-500/10' :
+                                                            event.type === 'meteor-shower' ? 'border-blue-500 text-blue-400 bg-blue-500/10' :
+                                                                event.type === 'mission' ? 'border-green-500 text-green-400 bg-green-500/10' :
+                                                                    'border-gray-500 text-gray-400 bg-gray-500/10'
+                                                            } uppercase tracking-wider`}>
+                                                            {event.type.replace('-', ' ')}
+                                                        </span>
                                                     </div>
-                                                    <button className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors" title="Ask AI">
-                                                        <MessageSquare size={20} />
-                                                    </button>
+                                                    <p className="text-star-white/80 leading-relaxed">{event.description}</p>
                                                 </div>
-                                                <div className="flex-1 flex items-center justify-center p-8">
-                                                    <div className="text-center space-y-4">
-                                                        <Globe size={64} className="mx-auto text-cyan-glow animate-pulse" />
-                                                        <p className="text-star-white/80">Interactive visibility map loading...</p>
-                                                        <p className="text-xs text-star-white/40">Showing optimal viewing locations for {new Date(selectedCalendarEvent.date).toLocaleDateString()}</p>
-                                                    </div>
+
+                                                <div className="flex-shrink-0 relative">
+                                                    <Telescope className="text-white/20 group-hover:text-cyan-glow transition-colors" size={32} />
+
+                                                    {/* Hover Overlay */}
+                                                    <AnimatePresence>
+                                                        {hoveredCalendarEvent === idx && (
+                                                            <motion.div
+                                                                initial={{ opacity: 0, x: 20, scale: 0.9 }}
+                                                                animate={{ opacity: 1, x: 0, scale: 1 }}
+                                                                exit={{ opacity: 0, x: 20, scale: 0.9 }}
+                                                                className="absolute right-full mr-4 top-1/2 -translate-y-1/2 w-64 bg-deep-space/95 border border-cyan-glow/30 rounded-lg p-4 shadow-xl z-50 pointer-events-none"
+                                                            >
+                                                                <div className="flex items-center gap-2 mb-2">
+                                                                    <Globe size={14} className="text-cyan-glow" />
+                                                                    <span className="text-[10px] font-orbitron text-cyan-glow uppercase tracking-wider">VISIBILITY</span>
+                                                                </div>
+                                                                <p className="text-xs text-white leading-relaxed">{event.visibility}</p>
+                                                            </motion.div>
+                                                        )}
+                                                    </AnimatePresence>
                                                 </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
+                                            </div>
+                                        </motion.div>
+                                    ))}
                                 </div>
                             </motion.div>
                         )}
@@ -525,7 +530,7 @@ export function Dashboard() {
 
                     {/* Cosmic Weather Overlay */}
                     <AnimatePresence>
-                        {showCosmicWeather && (
+                        {dashboardOverlay === 'weather' && weatherData && (
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -536,7 +541,7 @@ export function Dashboard() {
                                     <div className="p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
                                         <div className="flex items-center gap-4">
                                             <button
-                                                onClick={() => setShowCosmicWeather(false)}
+                                                onClick={() => setDashboardOverlay('none')}
                                                 className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors"
                                             >
                                                 <ChevronLeft size={24} />
@@ -546,9 +551,6 @@ export function Dashboard() {
                                                 <p className="text-xs text-cyan-glow font-mono tracking-[0.3em]">REAL-TIME ALERTS</p>
                                             </div>
                                         </div>
-                                        <button className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors" title="Ask AI">
-                                            <MessageSquare size={20} />
-                                        </button>
                                     </div>
                                     <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                                         {/* Solar Storms */}
@@ -557,15 +559,15 @@ export function Dashboard() {
                                             <div className="space-y-4">
                                                 <div>
                                                     <p className="text-xs text-star-white/60 uppercase">STATUS</p>
-                                                    <p className="text-2xl font-bold text-white">{COSMIC_WEATHER_DATA.solarStorms.status}</p>
+                                                    <p className="text-2xl font-bold text-white">{weatherData.solarStorms.status}</p>
                                                 </div>
                                                 <div>
                                                     <p className="text-xs text-star-white/60 uppercase">KP INDEX</p>
-                                                    <p className="text-xl font-mono text-white">{COSMIC_WEATHER_DATA.solarStorms.kpIndex}</p>
+                                                    <p className="text-xl font-mono text-white">{weatherData.solarStorms.kpIndex}</p>
                                                 </div>
                                                 <div>
                                                     <p className="text-xs text-star-white/60 uppercase">LAST FLARE</p>
-                                                    <p className="text-sm text-white">{COSMIC_WEATHER_DATA.solarStorms.lastFlare}</p>
+                                                    <p className="text-sm text-white">{weatherData.solarStorms.lastFlare}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -576,15 +578,15 @@ export function Dashboard() {
                                             <div className="space-y-4">
                                                 <div>
                                                     <p className="text-xs text-star-white/60 uppercase">VISIBILITY</p>
-                                                    <p className="text-xl font-bold text-white">{COSMIC_WEATHER_DATA.auroraForecast.visibility}</p>
+                                                    <p className="text-xl font-bold text-white">{weatherData.auroraForecast.visibility}</p>
                                                 </div>
                                                 <div>
                                                     <p className="text-xs text-star-white/60 uppercase">PROBABILITY</p>
-                                                    <p className="text-2xl font-mono text-white">{COSMIC_WEATHER_DATA.auroraForecast.probability}</p>
+                                                    <p className="text-2xl font-mono text-white">{weatherData.auroraForecast.probability}</p>
                                                 </div>
                                                 <div>
                                                     <p className="text-xs text-star-white/60 uppercase">NEXT PEAK</p>
-                                                    <p className="text-sm text-white">{COSMIC_WEATHER_DATA.auroraForecast.nextPeak}</p>
+                                                    <p className="text-sm text-white">{weatherData.auroraForecast.nextPeak}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -595,15 +597,15 @@ export function Dashboard() {
                                             <div className="space-y-4">
                                                 <div>
                                                     <p className="text-xs text-star-white/60 uppercase">LEVEL</p>
-                                                    <p className="text-2xl font-bold text-white">{COSMIC_WEATHER_DATA.radiation.level}</p>
+                                                    <p className="text-2xl font-bold text-white">{weatherData.radiation.level}</p>
                                                 </div>
                                                 <div>
                                                     <p className="text-xs text-star-white/60 uppercase">FLUX</p>
-                                                    <p className="text-sm font-mono text-white">{COSMIC_WEATHER_DATA.radiation.flux}</p>
+                                                    <p className="text-sm font-mono text-white">{weatherData.radiation.flux}</p>
                                                 </div>
                                                 <div>
                                                     <p className="text-xs text-star-white/60 uppercase">RISK</p>
-                                                    <p className="text-xl text-white">{COSMIC_WEATHER_DATA.radiation.risk}</p>
+                                                    <p className="text-xl text-white">{weatherData.radiation.risk}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -615,18 +617,18 @@ export function Dashboard() {
 
                     {/* Satellite Contributions Overlay */}
                     <AnimatePresence>
-                        {showSatellite && (
+                        {dashboardOverlay === 'satellite' && (
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
                             >
-                                <div className="w-full max-w-5xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+                                <div className="w-full max-w-5xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] relative">
                                     <div className="p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
                                         <div className="flex items-center gap-4">
                                             <button
-                                                onClick={() => setShowSatellite(false)}
+                                                onClick={() => setDashboardOverlay('none')}
                                                 className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors"
                                             >
                                                 <ChevronLeft size={24} />
@@ -636,9 +638,6 @@ export function Dashboard() {
                                                 <p className="text-xs text-cyan-glow font-mono tracking-[0.3em]">EARTH IMPACT ANALYSIS</p>
                                             </div>
                                         </div>
-                                        <button className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors" title="Ask AI">
-                                            <MessageSquare size={20} />
-                                        </button>
                                     </div>
 
                                     <div className="flex-1 overflow-y-auto p-8">
@@ -647,9 +646,13 @@ export function Dashboard() {
                                             <div className="space-y-4">
                                                 <h3 className="text-lg font-orbitron text-star-white mb-4">Key Impact Areas</h3>
                                                 {SATELLITE_DATA.contributions.map((item) => (
-                                                    <div key={item.id} className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-glow/30 transition-colors">
+                                                    <div
+                                                        key={item.id}
+                                                        className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-cyan-glow/50 hover:bg-white/10 transition-all cursor-pointer group"
+                                                        onClick={() => setSelectedSatelliteImpact(item)}
+                                                    >
                                                         <div className="flex justify-between items-start mb-2">
-                                                            <h4 className="font-bold text-white">{item.title}</h4>
+                                                            <h4 className="font-bold text-white group-hover:text-cyan-glow transition-colors">{item.title}</h4>
                                                             <span className={`text-xs px-2 py-0.5 rounded ${item.trend === 'up' ? 'bg-green-500/20 text-green-400' : 'bg-white/10 text-white'}`}>
                                                                 {item.trend === 'up' ? '▲ POSITIVE' : '● STABLE'}
                                                             </span>
@@ -660,12 +663,12 @@ export function Dashboard() {
                                                 ))}
                                             </div>
 
-                                            {/* Graph Visualization (Mock) */}
-                                            <div className="bg-white/5 border border-white/10 rounded-xl p-6 flex flex-col">
+                                            {/* Graph Visualization */}
+                                            <div className="bg-white/5 border border-white/10 rounded-xl p-6 flex flex-col h-[400px]">
                                                 <h3 className="text-lg font-orbitron text-star-white mb-6">Global Coverage Trend</h3>
                                                 <div className="flex-1 flex items-end justify-between gap-4 px-4 pb-4 border-b border-white/10 relative">
                                                     {/* Grid lines */}
-                                                    <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
+                                                    <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20 z-0">
                                                         <div className="w-full h-px bg-white" />
                                                         <div className="w-full h-px bg-white" />
                                                         <div className="w-full h-px bg-white" />
@@ -673,13 +676,13 @@ export function Dashboard() {
                                                     </div>
 
                                                     {SATELLITE_DATA.graphData.map((data, idx) => (
-                                                        <div key={idx} className="flex flex-col items-center gap-2 group w-full">
+                                                        <div key={idx} className="flex flex-col items-center gap-2 group w-full z-10 h-full justify-end">
                                                             <div
                                                                 className="w-full bg-cyan-glow/20 border-t border-x border-cyan-glow/50 rounded-t-sm relative group-hover:bg-cyan-glow/40 transition-all"
                                                                 style={{ height: `${data.coverage}%` }}
                                                             >
-                                                                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                                                                    {data.coverage}%
+                                                                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10">
+                                                                    {data.coverage}% Coverage
                                                                 </div>
                                                             </div>
                                                             <span className="text-xs text-star-white/60">{data.year}</span>
@@ -689,6 +692,70 @@ export function Dashboard() {
                                             </div>
                                         </div>
                                     </div>
+
+                                    {/* Detailed Impact Overlay */}
+                                    <AnimatePresence>
+                                        {selectedSatelliteImpact && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 50 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: 50 }}
+                                                className="absolute inset-0 z-50 bg-deep-space/95 backdrop-blur-xl flex flex-col"
+                                            >
+                                                <div className="p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
+                                                    <div className="flex items-center gap-4">
+                                                        <button
+                                                            onClick={() => setSelectedSatelliteImpact(null)}
+                                                            className="p-2 rounded-full hover:bg-white/10 text-cyan-glow transition-colors"
+                                                        >
+                                                            <ChevronLeft size={24} />
+                                                        </button>
+                                                        <div>
+                                                            <h2 className="text-xl font-orbitron text-white tracking-widest">{selectedSatelliteImpact.title.toUpperCase()}</h2>
+                                                            <p className="text-xs text-cyan-glow font-mono tracking-[0.3em]">IMPACT ANALYSIS</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex-1 overflow-y-auto p-8">
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                                        <div className="space-y-6">
+                                                            <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                                                                <h3 className="text-lg font-orbitron text-cyan-glow mb-4">Satellite Enabled Solution</h3>
+                                                                <p className="text-star-white/80 leading-relaxed">
+                                                                    By utilizing advanced satellite imagery and real-time data processing, we have achieved a <span className="text-white font-bold">{selectedSatelliteImpact.value}</span> improvement.
+                                                                    This allows for precise monitoring and rapid response capabilities that were previously impossible.
+                                                                </p>
+                                                            </div>
+                                                            <div className="bg-white/5 border border-white/10 rounded-xl p-6 opacity-60">
+                                                                <h3 className="text-lg font-orbitron text-red-400 mb-4">Pre-Satellite Era</h3>
+                                                                <p className="text-star-white/80 leading-relaxed">
+                                                                    Before satellite integration, data collection was manual, sporadic, and often delayed by days or weeks.
+                                                                    Coverage was limited to accessible ground stations, leaving vast blind spots in global monitoring.
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="bg-black/30 rounded-xl border border-white/10 flex flex-col items-center justify-center relative overflow-hidden group p-8">
+                                                            <div className="absolute inset-0 bg-gradient-to-br from-cyan-glow/10 to-transparent" />
+
+                                                            {/* Dynamic Icon */}
+                                                            <div className="relative z-10 mb-6 p-6 rounded-full bg-white/5 border border-white/10 shadow-[0_0_30px_rgba(0,240,255,0.1)]">
+                                                                {getImpactIcon(selectedSatelliteImpact.title)}
+                                                            </div>
+
+                                                            <div className="text-center relative z-10">
+                                                                <p className="text-xs text-cyan-glow font-mono uppercase tracking-[0.2em] mb-2">LIVE MONITORING</p>
+                                                                <p className="text-2xl font-bold text-white mb-1">{selectedSatelliteImpact.value}</p>
+                                                                <p className="text-xs text-star-white/60">Real-time data stream active</p>
+                                                            </div>
+
+                                                            {/* Scanning Effect */}
+                                                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-glow/5 to-transparent h-[200%] w-full animate-scan pointer-events-none" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </div>
                             </motion.div>
                         )}
@@ -780,8 +847,7 @@ export function Dashboard() {
                         )}
                     </AnimatePresence>
                 </>
-            )
-            }
-        </AnimatePresence >
+            )}
+        </AnimatePresence>
     );
 }

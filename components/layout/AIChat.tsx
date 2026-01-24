@@ -22,7 +22,14 @@ export function AIChat() {
 
     // Context
     const selectedPlanet = useSidebarStore(state => state.selectedPlanet);
-    const { mode, timelineIndex, isNeoOverlayOpen } = useAppStore();
+    const {
+        mode,
+        timelineIndex,
+        isNeoOverlayOpen,
+        dashboardOverlay,
+        selectedCalendarEvent,
+        selectedSatelliteImpact
+    } = useAppStore();
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -63,23 +70,51 @@ export function AIChat() {
             } else if (mode === 'dashboard') {
                 // Fetch current dashboard data to provide context
                 try {
-                    const [neoRes, issRes, marsRes, apodRes] = await Promise.all([
+                    const [neoRes, issRes, marsRes, apodRes, weatherRes] = await Promise.all([
                         fetch('/api/space/neo'),
                         fetch('/api/space/iss'),
                         fetch('/api/space/mars'),
-                        fetch('/api/space/apod')
+                        fetch('/api/space/apod'),
+                        fetch('/api/space/weather')
                     ]);
 
                     const neo = await neoRes.json();
                     const iss = await issRes.json();
                     const mars = await marsRes.json();
                     const apod = await apodRes.json();
+                    const weather = await weatherRes.json();
 
                     context += ` Viewing Mission Dashboard.
                     - APOD: ${apod.title} (${apod.explanation.substring(0, 100)}...)
                     - NEOs: ${neo.element_count} objects detected today.
                     - ISS Location: Lat ${iss.latitude?.toFixed(2)}, Lon ${iss.longitude?.toFixed(2)}.
                     - Mars: Latest photo from ${mars.photos?.[0]?.rover?.name} (Sol ${mars.photos?.[0]?.sol}).`;
+
+                    // Add Overlay Specific Context
+                    if (dashboardOverlay === 'calendar') {
+                        context += `\nUser has the Astronomical Calendar open.`;
+                        if (selectedCalendarEvent) {
+                            context += `\nUser is viewing details for event: ${selectedCalendarEvent.title} on ${selectedCalendarEvent.date}.
+                            - Type: ${selectedCalendarEvent.type}
+                            - Description: ${selectedCalendarEvent.description}
+                            - Visibility: ${selectedCalendarEvent.visibility || 'Global'}`;
+                        }
+                    } else if (dashboardOverlay === 'weather') {
+                        context += `\nUser has the Cosmic Weather panel open.
+                        - Solar Storm Status: ${weather.solarStorms.status} (KP: ${weather.solarStorms.kpIndex})
+                        - Aurora Forecast: ${weather.auroraForecast.probability} probability in ${weather.auroraForecast.visibility}
+                        - Radiation Level: ${weather.radiation.level}`;
+                    } else if (dashboardOverlay === 'satellite') {
+                        context += `\nUser has the Satellite Contributions panel open.`;
+                        if (selectedSatelliteImpact) {
+                            context += `\nUser is viewing impact analysis for: ${selectedSatelliteImpact.title}.
+                            - Value: ${selectedSatelliteImpact.value}
+                            - Description: ${selectedSatelliteImpact.description}`;
+                        }
+                    } else if (isNeoOverlayOpen) {
+                        context += `\nUser has the Near-Earth Objects (NEO) overlay open.`;
+                    }
+
                 } catch (e) {
                     context += ` Viewing Mission Dashboard (Data unavailable).`;
                 }

@@ -23,21 +23,21 @@ export const SATELLITE_DATA = {
             id: 1,
             title: "Climate Monitoring",
             description: "Tracking global temperature rise and ice cap melting rates.",
-            value: "1.2°C Rise",
-            trend: "up"
+            value: "-2.4% Ice Loss/Yr",
+            trend: "down"
         },
         {
             id: 2,
             title: "Disaster Response",
             description: "Real-time flood mapping and wildfire tracking.",
-            value: "15 Active Events",
-            trend: "neutral"
+            value: "4 Active Fires",
+            trend: "up"
         },
         {
             id: 3,
             title: "Agriculture",
             description: "Optimizing crop yields through soil moisture analysis.",
-            value: "+15% Efficiency",
+            value: "+18% Yield",
             trend: "up"
         }
     ],

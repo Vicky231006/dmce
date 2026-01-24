@@ -157,7 +157,7 @@ export async function getCachedData<T>(
     fetcher: () => Promise<T>,
     ttl: number = 1800000, // 30min default
     fallback?: T,
-    timeoutMs: number = 5000 // 5s default timeout
+    timeoutMs: number = 15000 // 15s default timeout
 ): Promise<T> {
     try {
         // Check IndexedDB

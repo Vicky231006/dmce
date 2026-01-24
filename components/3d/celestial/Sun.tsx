@@ -4,13 +4,14 @@ import { useRef, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useTexture } from '@react-three/drei';
-import { useSolarSystemStore } from '@/lib/store';
+import { useSolarSystemStore, useSidebarStore } from '@/lib/store';
 
 export function Sun() {
     const meshRef = useRef<THREE.Mesh>(null);
     const groupRef = useRef<THREE.Group>(null);
     const sunTexture = useTexture('/textures/planets/sun_diffuse.jpg');
     const { registerPlanet } = useSolarSystemStore();
+    const { setSelectedPlanet } = useSidebarStore();
     const [hovered, setHovered] = useState(false);
 
     useEffect(() => {
@@ -40,6 +41,10 @@ export function Sun() {
                 ref={meshRef}
                 onPointerEnter={() => setHovered(true)}
                 onPointerLeave={() => setHovered(false)}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedPlanet('Sun');
+                }}
                 userData={{ name: 'Sun', type: 'star' }}
             >
                 <sphereGeometry args={[8, 64, 64]} />

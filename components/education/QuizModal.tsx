@@ -39,7 +39,7 @@ export function QuizModal({ quiz, onComplete }: QuizModalProps) {
     const handleNext = () => {
         if (isLastQuestion) {
             // Quiz complete
-            onComplete(score + (isCorrect ? 1 : 0)); // Add current question score if correct
+            onComplete(score); // Score is already updated by handleSubmit
         } else {
             setCurrentQuestion(currentQuestion + 1);
             setSelectedAnswer(null);
@@ -69,12 +69,12 @@ export function QuizModal({ quiz, onComplete }: QuizModalProps) {
                             <div
                                 key={idx}
                                 className={`w-2 h-2 rounded-full transition-colors duration-300 ${idx < currentQuestion
-                                        ? answers[idx]
-                                            ? 'bg-success-green shadow-[0_0_10px_rgba(0,255,100,0.5)]'
-                                            : 'bg-warning-orange shadow-[0_0_10px_rgba(255,100,0,0.5)]'
-                                        : idx === currentQuestion
-                                            ? 'bg-cyan-glow animate-pulse'
-                                            : 'bg-white/10'
+                                    ? answers[idx]
+                                        ? 'bg-success-green shadow-[0_0_10px_rgba(0,255,100,0.5)]'
+                                        : 'bg-warning-orange shadow-[0_0_10px_rgba(255,100,0,0.5)]'
+                                    : idx === currentQuestion
+                                        ? 'bg-cyan-glow animate-pulse'
+                                        : 'bg-white/10'
                                     }`}
                             />
                         ))}
@@ -107,12 +107,12 @@ export function QuizModal({ quiz, onComplete }: QuizModalProps) {
                                         onClick={() => !showExplanation && setSelectedAnswer(idx)}
                                         disabled={showExplanation}
                                         className={`w-full text-left p-5 rounded-xl border transition-all duration-200 relative overflow-hidden group ${shouldHighlight
-                                                ? isCorrectAnswer
-                                                    ? 'bg-success-green/10 border-success-green text-white'
-                                                    : 'bg-warning-orange/10 border-warning-orange text-white'
-                                                : isSelected
-                                                    ? 'bg-cyan-glow/10 border-cyan-glow text-white shadow-[0_0_15px_rgba(0,240,255,0.1)]'
-                                                    : 'bg-white/5 border-white/10 text-star-white/80 hover:bg-white/10 hover:border-white/20 hover:text-white'
+                                            ? isCorrectAnswer
+                                                ? 'bg-success-green/10 border-success-green text-white'
+                                                : 'bg-warning-orange/10 border-warning-orange text-white'
+                                            : isSelected
+                                                ? 'bg-cyan-glow/10 border-cyan-glow text-white shadow-[0_0_15px_rgba(0,240,255,0.1)]'
+                                                : 'bg-white/5 border-white/10 text-star-white/80 hover:bg-white/10 hover:border-white/20 hover:text-white'
                                             } ${showExplanation && !shouldHighlight ? 'opacity-50' : 'opacity-100'} ${showExplanation ? 'cursor-default' : 'cursor-pointer'}`}
                                     >
                                         <div className="flex items-center justify-between relative z-10">
@@ -135,8 +135,8 @@ export function QuizModal({ quiz, onComplete }: QuizModalProps) {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 className={`p-5 rounded-xl border ${isCorrect
-                                        ? 'bg-success-green/5 border-success-green/20'
-                                        : 'bg-warning-orange/5 border-warning-orange/20'
+                                    ? 'bg-success-green/5 border-success-green/20'
+                                    : 'bg-warning-orange/5 border-warning-orange/20'
                                     } mb-8`}
                             >
                                 <p className={`text-xs font-orbitron mb-2 tracking-wider uppercase ${isCorrect ? 'text-success-green' : 'text-warning-orange'

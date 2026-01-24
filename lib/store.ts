@@ -6,18 +6,33 @@ interface AppState {
     mode: 'explore' | 'dashboard' | 'mission' | 'education';
     timelineIndex: number;
     isNeoOverlayOpen: boolean;
+    // Dashboard Global State for AI Context
+    dashboardOverlay: 'none' | 'calendar' | 'weather' | 'satellite';
+    selectedCalendarEvent: any | null; // Using any to avoid circular dependency with calendarData for now
+    selectedSatelliteImpact: any | null;
+
     setMode: (mode: AppState['mode']) => void;
     setTimelineIndex: (index: number) => void;
     setNeoOverlayOpen: (isOpen: boolean) => void;
+    setDashboardOverlay: (overlay: AppState['dashboardOverlay']) => void;
+    setSelectedCalendarEvent: (event: any | null) => void;
+    setSelectedSatelliteImpact: (impact: any | null) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
     mode: 'explore',
     timelineIndex: 0,
     isNeoOverlayOpen: false,
+    dashboardOverlay: 'none',
+    selectedCalendarEvent: null,
+    selectedSatelliteImpact: null,
+
     setMode: (mode) => set({ mode }),
     setTimelineIndex: (index) => set({ timelineIndex: index }),
     setNeoOverlayOpen: (isOpen) => set({ isNeoOverlayOpen: isOpen }),
+    setDashboardOverlay: (overlay) => set({ dashboardOverlay: overlay }),
+    setSelectedCalendarEvent: (event) => set({ selectedCalendarEvent: event }),
+    setSelectedSatelliteImpact: (impact) => set({ selectedSatelliteImpact: impact }),
 }));
 
 // --- Time Control State ---

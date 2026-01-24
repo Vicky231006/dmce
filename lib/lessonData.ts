@@ -63,16 +63,12 @@ export const LESSON_BIG_BANG: Lesson = {
         { timestamp: 33, type: 'stars-ignite', params: { count: 200, fadeInDuration: 5, brightness: 1.5, duration: 10 } }
     ],
 
-    interactiveControls: [
-        { id: 'expansion-speed', label: 'Expansion Speed', type: 'slider', position: { x: 5, y: 80 }, effect: (value) => console.log('Expansion speed:', value) },
-        { id: 'particle-view', label: 'Zoom to Particles', type: 'button', position: { x: 5, y: 88 }, effect: () => console.log('Zoom to particles') },
-        { id: 'show-grid', label: 'Spacetime Grid', type: 'toggle', position: { x: 5, y: 94 }, effect: (enabled) => console.log('Toggle grid:', enabled) }
-    ],
+    interactiveControls: [],
 
     quiz: [
         { question: "How old is our universe?", options: ["6,000 years", "4.5 billion years", "13.8 billion years", "Infinite"], correctAnswer: 2, explanation: "The Big Bang occurred 13.8 billion years ago." },
         { question: "What was the first element?", options: ["Carbon", "Oxygen", "Hydrogen", "Iron"], correctAnswer: 2, explanation: "Hydrogen was the first and lightest atom to form." },
-        { question: "What is the CMB?", options: ["Star light", "Big Bang afterglow", "Radio signals", "Black hole energy"], correctAnswer: 1, explanation: "The CMB is ancient light released when atoms first formed." },
+        { question: "What is the Cosmic Microwave Background(CMB)?", options: ["Star light", "Big Bang afterglow", "Radio signals", "Black hole energy"], correctAnswer: 1, explanation: "The CMB is ancient light released when atoms first formed." },
         { question: "What existed before the Big Bang?", options: ["Another universe", "Nothing (no space/time)", "Empty space", "A star"], correctAnswer: 1, explanation: "Time itself began at the Big Bang." },
         { question: "We are made of...", options: ["Earth mud", "Stardust", "Water", "Chemicals"], correctAnswer: 1, explanation: "Our atoms were forged in ancient stars." }
     ]
@@ -100,9 +96,7 @@ export const LESSON_STAR_CYCLE: Lesson = {
         { timestamp: 45, type: 'sphere-grow', params: { scale: 10, color: 0xff4500, duration: 15 } },
         { timestamp: 60, type: 'supernova', params: { duration: 10 } }
     ],
-    interactiveControls: [
-        { id: 'mass-slider', label: 'Star Mass', type: 'slider', position: { x: 5, y: 80 }, effect: (val) => console.log('Mass:', val) }
-    ],
+    interactiveControls: [],
     quiz: [
         { question: "What pulls gas together to form a star?", options: ["Magnetism", "Gravity", "Fusion", "Electricity"], correctAnswer: 1, explanation: "Gravity pulls dust and gas together." },
         { question: "What powers a star?", options: ["Fire", "Fission", "Fusion", "Coal"], correctAnswer: 2, explanation: "Fusion converts hydrogen into helium." },

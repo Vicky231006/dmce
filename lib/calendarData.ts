@@ -3,6 +3,7 @@ export interface CalendarEvent {
     title: string;
     description: string;
     type: 'eclipse' | 'meteor-shower' | 'conjunction' | 'mission' | 'other';
+    visibility: string;
 }
 
 export const CALENDAR_DATA: { [year: number]: CalendarEvent[] } = {
@@ -11,25 +12,29 @@ export const CALENDAR_DATA: { [year: number]: CalendarEvent[] } = {
             date: "2025-03-14",
             title: "Total Lunar Eclipse",
             description: "Visible across the Americas, Europe, and Africa. The moon will turn a blood-red hue.",
-            type: "eclipse"
+            type: "eclipse",
+            visibility: "North & South America, Europe, Africa"
         },
         {
             date: "2025-05-04",
             title: "Eta Aquarids Meteor Shower",
             description: "Peak activity with up to 60 meteors per hour, originating from Halley's Comet.",
-            type: "meteor-shower"
+            type: "meteor-shower",
+            visibility: "Global (Best in Southern Hemisphere)"
         },
         {
             date: "2025-09-21",
             title: "Jupiter at Opposition",
             description: "Jupiter will be at its closest approach to Earth and its face will be fully illuminated by the Sun.",
-            type: "conjunction"
+            type: "conjunction",
+            visibility: "Global (Night Sky)"
         },
         {
             date: "2025-11-07",
             title: "Artemis II Launch (Projected)",
             description: "NASA's first crewed mission to the Moon in over 50 years.",
-            type: "mission"
+            type: "mission",
+            visibility: "Kennedy Space Center, FL (Livestream Global)"
         }
     ],
     2026: [
@@ -37,25 +42,29 @@ export const CALENDAR_DATA: { [year: number]: CalendarEvent[] } = {
             date: "2026-02-17",
             title: "Annular Solar Eclipse",
             description: "A 'Ring of Fire' eclipse visible in Antarctica and parts of South America.",
-            type: "eclipse"
+            type: "eclipse",
+            visibility: "Antarctica, Southern South America"
         },
         {
             date: "2026-04-13",
             title: "Comet 2026/S1 Perihelion",
             description: "A newly discovered comet reaches its closest point to the Sun, potentially visible to the naked eye.",
-            type: "other"
+            type: "other",
+            visibility: "Northern Hemisphere (Pre-Dawn)"
         },
         {
             date: "2026-08-12",
             title: "Perseids Meteor Shower Peak",
             description: "One of the best meteor showers of the year, producing up to 100 meteors per hour.",
-            type: "meteor-shower"
+            type: "meteor-shower",
+            visibility: "Northern Hemisphere"
         },
         {
             date: "2026-10-06",
             title: "Mars at Opposition",
             description: "Mars will be brighter than any other star or planet in the night sky, offering excellent viewing.",
-            type: "conjunction"
+            type: "conjunction",
+            visibility: "Global (Night Sky)"
         }
     ]
 };
