@@ -16,7 +16,7 @@ export function Navbar() {
     ] as const;
 
     return (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50">
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100]">
             <div className="flex items-center gap-1 p-1 bg-deep-space/80 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl">
                 {navItems.map((item) => {
                     const isActive = mode === item.id;
