@@ -431,11 +431,11 @@ export function Dashboard() {
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
-                                className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+                                className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black/80 backdrop-blur-md p-4 pt-24 md:pt-4"
                             >
                                 <div className="w-full max-w-4xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] relative">
                                     {/* Header */}
-                                    <div className="p-4 md:p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
+                                    <div className="p-4 md:p-6 border-b border-cyan-glow/20 bg-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                                         <div className="flex items-center gap-4">
                                             <button
                                                 onClick={() => setDashboardOverlay('none')}
@@ -444,12 +444,12 @@ export function Dashboard() {
                                                 <ChevronLeft size={24} />
                                             </button>
                                             <div>
-                                                <h2 className="text-2xl font-orbitron text-white tracking-widest">ASTRONOMICAL CALENDAR</h2>
+                                                <h2 className="text-xl md:text-2xl font-orbitron text-white tracking-widest">ASTRONOMICAL CALENDAR</h2>
                                                 <p className="text-xs text-cyan-glow font-mono tracking-[0.3em]">MAJOR EVENTS</p>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-4 pl-12 md:pl-0">
                                             <div className="flex items-center gap-4 bg-black/30 rounded-full p-1 border border-white/10">
                                                 <button
                                                     onClick={() => setCalendarYear(2025)}
@@ -466,10 +466,8 @@ export function Dashboard() {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                {/* Content */}
-                                <div className="flex-1 overflow-y-auto p-8 space-y-4">
+                                    {/* Content */}
+                                <div className="flex-1 overflow-y-auto p-8 space-y-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
                                     {CALENDAR_DATA[calendarYear]?.map((event, idx) => (
                                         <motion.div
                                             key={idx}
@@ -482,8 +480,8 @@ export function Dashboard() {
                                         >
                                             <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-glow to-transparent rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                                            <div className="flex flex-col md:flex-row md:items-center gap-6">
-                                                <div className="flex-shrink-0 w-24 text-center">
+                                            <div className="grid grid-cols-1 xl:grid-cols-[6rem_1fr_auto] gap-4 xl:gap-6 items-start">
+                                                <div className="w-full xl:w-auto flex items-center xl:block gap-4 border-b xl:border-b-0 border-white/10 pb-2 xl:pb-0">
                                                     <span className="block text-3xl font-bold text-white">{new Date(event.date).getDate()}</span>
                                                     <span className="text-xs font-orbitron text-cyan-glow uppercase">{new Date(event.date).toLocaleString('default', { month: 'short' })}</span>
                                                 </div>
@@ -521,12 +519,16 @@ export function Dashboard() {
                                                                 <p className="text-xs text-white leading-relaxed">{event.visibility}</p>
                                                             </motion.div>
                                                         )}
+                                                        
                                                     </AnimatePresence>
                                                 </div>
                                             </div>
                                         </motion.div>
                                     ))}
                                 </div>
+                                </div>
+
+                                
                             </motion.div>
                         )}
                     </AnimatePresence>
