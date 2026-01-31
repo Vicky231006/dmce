@@ -467,68 +467,68 @@ export function Dashboard() {
                                         </div>
                                     </div>
                                     {/* Content */}
-                                <div className="flex-1 overflow-y-auto p-8 space-y-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
-                                    {CALENDAR_DATA[calendarYear]?.map((event, idx) => (
-                                        <motion.div
-                                            key={idx}
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: idx * 0.1 }}
-                                            onMouseEnter={() => setHoveredCalendarEvent(idx)}
-                                            onMouseLeave={() => setHoveredCalendarEvent(null)}
-                                            className="group relative bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-glow/50 rounded-xl p-6 transition-all cursor-default"
-                                        >
-                                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-glow to-transparent rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className="flex-1 overflow-y-auto p-8 space-y-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+                                        {CALENDAR_DATA[calendarYear]?.map((event, idx) => (
+                                            <motion.div
+                                                key={idx}
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: idx * 0.1 }}
+                                                onMouseEnter={() => setHoveredCalendarEvent(idx)}
+                                                onMouseLeave={() => setHoveredCalendarEvent(null)}
+                                                className="group relative bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-glow/50 rounded-xl p-6 transition-all cursor-default"
+                                            >
+                                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-glow to-transparent rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                                            <div className="grid grid-cols-1 xl:grid-cols-[6rem_1fr_auto] gap-4 xl:gap-6 items-start">
-                                                <div className="w-full xl:w-auto flex items-center xl:block gap-4 border-b xl:border-b-0 border-white/10 pb-2 xl:pb-0">
-                                                    <span className="block text-3xl font-bold text-white">{new Date(event.date).getDate()}</span>
-                                                    <span className="text-xs font-orbitron text-cyan-glow uppercase">{new Date(event.date).toLocaleString('default', { month: 'short' })}</span>
-                                                </div>
-
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-3 mb-2">
-                                                        <h3 className="text-xl font-orbitron text-white">{event.title}</h3>
-                                                        <span className={`text-[10px] px-2 py-0.5 rounded border ${event.type === 'eclipse' ? 'border-purple-500 text-purple-400 bg-purple-500/10' :
-                                                            event.type === 'meteor-shower' ? 'border-blue-500 text-blue-400 bg-blue-500/10' :
-                                                                event.type === 'mission' ? 'border-green-500 text-green-400 bg-green-500/10' :
-                                                                    'border-gray-500 text-gray-400 bg-gray-500/10'
-                                                            } uppercase tracking-wider`}>
-                                                            {event.type.replace('-', ' ')}
-                                                        </span>
+                                                <div className="grid grid-cols-1 xl:grid-cols-[6rem_1fr_auto] gap-4 xl:gap-6 items-start">
+                                                    <div className="w-full xl:w-auto flex items-center xl:block gap-4 border-b xl:border-b-0 border-white/10 pb-2 xl:pb-0">
+                                                        <span className="block text-3xl font-bold text-white">{new Date(event.date).getDate()}</span>
+                                                        <span className="text-xs font-orbitron text-cyan-glow uppercase">{new Date(event.date).toLocaleString('default', { month: 'short' })}</span>
                                                     </div>
-                                                    <p className="text-star-white/80 leading-relaxed">{event.description}</p>
+
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-3 mb-2">
+                                                            <h3 className="text-xl font-orbitron text-white">{event.title}</h3>
+                                                            <span className={`text-[10px] px-2 py-0.5 rounded border ${event.type === 'eclipse' ? 'border-purple-500 text-purple-400 bg-purple-500/10' :
+                                                                event.type === 'meteor-shower' ? 'border-blue-500 text-blue-400 bg-blue-500/10' :
+                                                                    event.type === 'mission' ? 'border-green-500 text-green-400 bg-green-500/10' :
+                                                                        'border-gray-500 text-gray-400 bg-gray-500/10'
+                                                                } uppercase tracking-wider`}>
+                                                                {event.type.replace('-', ' ')}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-star-white/80 leading-relaxed">{event.description}</p>
+                                                    </div>
+
+                                                    <div className="flex-shrink-0 relative">
+                                                        <Telescope className="text-white/20 group-hover:text-cyan-glow transition-colors" size={32} />
+
+                                                        {/* Hover Overlay */}
+                                                        <AnimatePresence>
+                                                            {hoveredCalendarEvent === idx && (
+                                                                <motion.div
+                                                                    initial={{ opacity: 0, x: 20, scale: 0.9 }}
+                                                                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                                                                    exit={{ opacity: 0, x: 20, scale: 0.9 }}
+                                                                    className="absolute right-0 top-full mt-2 md:right-full md:mr-4 md:top-1/2 md:-translate-y-1/2 md:mt-0 w-64 bg-deep-space/95 border border-cyan-glow/30 rounded-lg p-4 shadow-xl z-50 pointer-events-none"
+                                                                >
+                                                                    <div className="flex items-center gap-2 mb-2">
+                                                                        <Globe size={14} className="text-cyan-glow" />
+                                                                        <span className="text-[10px] font-orbitron text-cyan-glow uppercase tracking-wider">VISIBILITY</span>
+                                                                    </div>
+                                                                    <p className="text-xs text-white leading-relaxed">{event.visibility}</p>
+                                                                </motion.div>
+                                                            )}
+
+                                                        </AnimatePresence>
+                                                    </div>
                                                 </div>
-
-                                                <div className="flex-shrink-0 relative">
-                                                    <Telescope className="text-white/20 group-hover:text-cyan-glow transition-colors" size={32} />
-
-                                                    {/* Hover Overlay */}
-                                                    <AnimatePresence>
-                                                        {hoveredCalendarEvent === idx && (
-                                                            <motion.div
-                                                                initial={{ opacity: 0, x: 20, scale: 0.9 }}
-                                                                animate={{ opacity: 1, x: 0, scale: 1 }}
-                                                                exit={{ opacity: 0, x: 20, scale: 0.9 }}
-                                                                className="absolute right-full mr-4 top-1/2 -translate-y-1/2 w-64 bg-deep-space/95 border border-cyan-glow/30 rounded-lg p-4 shadow-xl z-50 pointer-events-none"
-                                                            >
-                                                                <div className="flex items-center gap-2 mb-2">
-                                                                    <Globe size={14} className="text-cyan-glow" />
-                                                                    <span className="text-[10px] font-orbitron text-cyan-glow uppercase tracking-wider">VISIBILITY</span>
-                                                                </div>
-                                                                <p className="text-xs text-white leading-relaxed">{event.visibility}</p>
-                                                            </motion.div>
-                                                        )}
-                                                        
-                                                    </AnimatePresence>
-                                                </div>
-                                            </div>
-                                        </motion.div>
-                                    ))}
-                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </div>
                                 </div>
 
-                                
+
                             </motion.div>
                         )}
                     </AnimatePresence>

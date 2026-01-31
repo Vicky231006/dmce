@@ -135,7 +135,7 @@ function MainMenu({
             initial={{ x: -50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -50, opacity: 0 }}
-            className="fixed left-1/2 -translate-x-1/2 md:translate-x-0 md:left-20 top-24 md:top-1/2 -translate-y-0 md:-translate-y-1/2 w-[90vw] md:w-[300px] z-50 max-w-[350px] scale-75 md:scale-100 origin-top"
+            className="fixed left-0 top-1/2 -translate-y-1/2 md:translate-x-0 md:left-20 md:-translate-y-1/2 w-[250px] md:w-[300px] z-50 scale-50 md:scale-100 origin-left md:origin-top -ml-2 md:ml-0"
         >
             <div className="bg-deep-space/90 backdrop-blur-xl border border-cyan-glow/30 p-6 md:p-8 clip-corners relative">
                 {/* Decorative Lines */}

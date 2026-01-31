@@ -27,9 +27,9 @@ export function TimelineEvent({ event, index, isActive, side }: TimelineEventPro
             initial={{ opacity: 0 }}
             animate={{ opacity: isInView ? 1 : 0.3 }}
             transition={{ duration: 0.6 }}
-            className="min-h-screen flex items-center justify-center px-8 py-20"
+            className="min-h-screen flex items-center justify-center px-4 py-12 md:px-8 md:py-20"
         >
-            <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center">
                 {/* Left Card */}
                 {infoOnLeft ? (
                     <InfoCard event={event} side="left" isActive={isActive} />
