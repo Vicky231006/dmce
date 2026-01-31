@@ -179,7 +179,10 @@ export function Dashboard() {
                                                     <div className="grid grid-cols-2 gap-2 text-[10px] text-star-white/70">
                                                         <div>
                                                             <span className="block text-star-white/40">DIAMETER</span>
-                                                            {Math.round(neo.estimated_diameter.meters.estimated_diameter_max)}m
+                                                           {/* {Math.round(neo.estimated_diameter.meters.estimated_diameter_max)}m */}
+                                                              {neo.estimated_diameter?.meters?.estimated_diameter_max 
+                                                                ? `${Math.round(neo.estimated_diameter.meters.estimated_diameter_max)}m`
+                                                                : 'N/A'}
                                                         </div>
                                                         <div className="text-right">
                                                             <span className="block text-star-white/40">MISS DISTANCE</span>
@@ -818,7 +821,9 @@ export function Dashboard() {
                                                     <div className="grid grid-cols-2 gap-4 text-sm">
                                                         <div className="space-y-1">
                                                             <p className="text-[10px] text-star-white/40 uppercase tracking-wider">DIAMETER (MAX)</p>
-                                                            <p className="text-white font-mono">{Math.round(neo.estimated_diameter.meters.estimated_diameter_max)} meters</p>
+                                                            <p className="text-white font-mono">{neo.estimated_diameter?.meters?.estimated_diameter_max 
+                                                                ? `${Math.round(neo.estimated_diameter.meters.estimated_diameter_max)} meters`
+                                                                : 'N/A'}</p>
                                                         </div>
                                                         <div className="space-y-1 text-right">
                                                             <p className="text-[10px] text-star-white/40 uppercase tracking-wider">MISS DISTANCE</p>
