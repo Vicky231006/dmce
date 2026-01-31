@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { SPACE_TIMELINE_EVENTS } from '@/lib/timelineData';
 import { TimelineEvent } from './TimelineEvent';
 import { YearTransition } from './YearTransition';
@@ -65,12 +65,19 @@ export function TimelineContainer() {
     }, [currentIndex, setTimelineIndex]);
 
     return (
-        <div ref={containerRef} className="relative bg-void-black min-h-screen">
+        <div ref={containerRef} className="relative bg-void-black min-h-screen pt-64 md:pt-0">
             {/* Year Intro */}
-            {isYearIntro && <YearIntroAnimation year={SPACE_TIMELINE_EVENTS[0].year} />}
+            <AnimatePresence>
+                {isYearIntro && <YearIntroAnimation year={SPACE_TIMELINE_EVENTS[0].year} />}
+            </AnimatePresence>
 
             {/* Timeline Events */}
-            <div className="pb-[50vh]">
+            <motion.div
+                className="pb-[50vh]"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isYearIntro ? 0 : 1 }}
+                transition={{ duration: 1, ease: "easeOut" }}
+            >
                 {SPACE_TIMELINE_EVENTS.map((event, index) => (
                     <div key={event.year + event.title}>
                         {/* Year Transition (between events) */}
@@ -85,17 +92,19 @@ export function TimelineContainer() {
                         )}
 
                         {/* Event Card */}
-                        <div className="snap-start snap-always h-screen flex items-center justify-center">
-                            <TimelineEvent
-                                event={event}
-                                index={index}
-                                isActive={currentIndex === index}
-                                side={index % 2 === 0 ? 'left' : 'right'}
-                            />
+                        <div className="snap-start snap-always h-screen flex items-center justify-center overflow-hidden">
+                            <div className="w-full h-full md:w-auto md:h-auto transform scale-[0.85] md:scale-100 origin-center flex items-center justify-center">
+                                <TimelineEvent
+                                    event={event}
+                                    index={index}
+                                    isActive={currentIndex === index}
+                                    side={index % 2 === 0 ? 'left' : 'right'}
+                                />
+                            </div>
                         </div>
                     </div>
                 ))}
-            </div>
+            </motion.div>
 
             {/* Exit Animation Placeholder */}
             {/* Exit Animation Placeholder (Triggers Loop) */}
@@ -113,6 +122,6 @@ export function TimelineContainer() {
                     <p className="text-cyan-glow/60 text-sm animate-pulse">Warping to Start...</p>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

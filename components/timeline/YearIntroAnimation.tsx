@@ -9,7 +9,7 @@ export function YearIntroAnimation({ year }: { year: number }) {
     useEffect(() => {
         const duration = 1500; // 1.5 seconds
         const steps = year - 1900;
-        const increment = duration / steps;
+        const increment = duration / Math.max(steps, 1);
 
         const interval = setInterval(() => {
             setCount(prev => {
@@ -63,7 +63,7 @@ export function YearIntroAnimation({ year }: { year: number }) {
                 transition={{ delay: 0.3, duration: 0.6 }}
                 className="relative z-10"
             >
-                <h1 className="text-[120px] font-orbitron font-bold text-cyan-glow">
+                <h1 className="text-[60px] md:text-[120px] font-orbitron font-bold text-cyan-glow">
                     {count}
                 </h1>
                 <motion.div

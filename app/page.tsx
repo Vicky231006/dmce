@@ -64,7 +64,7 @@ export default function Home() {
             <h2 className="text-2xl font-orbitron text-cyan-glow mb-4">
               Initializing Solar System
             </h2>
-            <div className="w-64 h-2 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-64 h-2 bg-white/10 rounded-full overflow-hidden mx-auto">
               <motion.div
                 className="h-full bg-gradient-to-r from-cyan-glow to-plasma-purple"
                 initial={{ width: 0 }}

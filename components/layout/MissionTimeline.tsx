@@ -19,13 +19,16 @@ export function MissionTimeline() {
                     id="mission-timeline-scroll-container"
                 >
                     {/* Back Button (Fixed) */}
-                    <div className="fixed top-6 right-6 z-50">
+                    <div className="fixed top-24 right-4 md:top-6 md:right-6 z-50">
                         <button
                             onClick={() => setMode('explore')}
-                            className="flex items-center gap-2 px-6 py-3 rounded-full bg-deep-space/80 backdrop-blur-xl border border-white/10 text-star-white hover:bg-white/10 hover:border-cyan-glow/50 transition-all group shadow-lg"
+                            className="flex items-center justify-center gap-2 w-10 h-10 md:w-auto md:h-auto md:px-6 md:py-3 rounded-full bg-red-500/10 backdrop-blur-xl border border-red-500/30 text-red-400 hover:bg-red-500/20 transition-all group shadow-lg"
                         >
-                            <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-                            <span className="font-orbitron text-sm tracking-wider">EXIT TIMELINE</span>
+                            <span className="md:hidden text-lg">✕</span>
+                            <span className="hidden md:flex items-center gap-2">
+                                <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                                <span className="font-orbitron text-sm tracking-wider">EXIT TIMELINE</span>
+                            </span>
                         </button>
                     </div>
 

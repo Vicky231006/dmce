@@ -17,7 +17,7 @@ export function LessonSelectionScreen({ onSelectLesson }: { onSelectLesson: (id:
     };
 
     return (
-        <div className="min-h-screen p-8 pt-24 bg-gradient-to-b from-deep-space to-void-black overflow-y-auto">
+        <div className="min-h-screen p-4 md:p-8 pt-24 md:pt-24 bg-gradient-to-b from-deep-space to-void-black">
             {/* Header */}
             <motion.div
                 initial={{ y: -50, opacity: 0 }}
@@ -49,7 +49,7 @@ export function LessonSelectionScreen({ onSelectLesson }: { onSelectLesson: (id:
             </motion.div>
 
             {/* Lesson Grid */}
-            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-20">
+            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 pb-72 md:pb-20">
                 {LESSONS.map((lesson, index) => {
                     const progress = lessonProgress.get(lesson.id);
                     const isUnlocked = isLessonUnlocked(index);
@@ -65,8 +65,8 @@ export function LessonSelectionScreen({ onSelectLesson }: { onSelectLesson: (id:
                             <GlassCard
                                 glow={isUnlocked && !isCompleted}
                                 className={`relative overflow-hidden transition-all duration-300 h-full flex flex-col ${isUnlocked
-                                        ? 'cursor-pointer hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(0,240,255,0.2)]'
-                                        : 'opacity-50 cursor-not-allowed grayscale'
+                                    ? 'cursor-pointer hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(0,240,255,0.2)]'
+                                    : 'opacity-50 cursor-not-allowed grayscale'
                                     }`}
                                 onClick={() => isUnlocked && onSelectLesson(lesson.id)}
                             >

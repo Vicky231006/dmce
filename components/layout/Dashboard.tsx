@@ -147,9 +147,9 @@ export function Dashboard() {
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: 400, opacity: 0 }}
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className="fixed right-0 top-0 h-screen w-[500px] z-20 overflow-y-auto bg-deep-space/80 backdrop-blur-xl border-l border-cyan-glow/20 shadow-2xl"
+                        className="fixed right-0 top-0 h-screen w-full md:w-[500px] z-20 overflow-y-auto bg-deep-space/80 backdrop-blur-xl border-l border-cyan-glow/20 shadow-2xl pt-20 md:pt-0"
                     >
-                        <div className="p-6 space-y-6">
+                        <div className="p-4 md:p-6 space-y-6">
                             <h2 className="text-2xl font-orbitron text-cyan-glow mb-6">Mission Dashboard</h2>
 
                             {/* NEO Panel */}
@@ -179,8 +179,8 @@ export function Dashboard() {
                                                     <div className="grid grid-cols-2 gap-2 text-[10px] text-star-white/70">
                                                         <div>
                                                             <span className="block text-star-white/40">DIAMETER</span>
-                                                           {/* {Math.round(neo.estimated_diameter.meters.estimated_diameter_max)}m */}
-                                                              {neo.estimated_diameter?.meters?.estimated_diameter_max 
+                                                            {/* {Math.round(neo.estimated_diameter.meters.estimated_diameter_max)}m */}
+                                                            {neo.estimated_diameter?.meters?.estimated_diameter_max
                                                                 ? `${Math.round(neo.estimated_diameter.meters.estimated_diameter_max)}m`
                                                                 : 'N/A'}
                                                         </div>
@@ -433,9 +433,9 @@ export function Dashboard() {
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
                             >
-                                <div className="w-full max-w-4xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[80vh] relative">
+                                <div className="w-full max-w-4xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] relative">
                                     {/* Header */}
-                                    <div className="p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
+                                    <div className="p-4 md:p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
                                         <div className="flex items-center gap-4">
                                             <button
                                                 onClick={() => setDashboardOverlay('none')}
@@ -540,7 +540,7 @@ export function Dashboard() {
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
                             >
-                                <div className="w-full max-w-4xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[80vh]">
+                                <div className="w-full max-w-4xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] md:max-h-[80vh]">
                                     <div className="p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
                                         <div className="flex items-center gap-4">
                                             <button
@@ -555,60 +555,62 @@ export function Dashboard() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                                        {/* Solar Storms */}
-                                        <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-yellow-400/50 transition-colors">
-                                            <h3 className="text-lg font-orbitron text-yellow-400 mb-4">Solar Storms</h3>
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <p className="text-xs text-star-white/60 uppercase">STATUS</p>
-                                                    <p className="text-2xl font-bold text-white">{weatherData.solarStorms.status}</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs text-star-white/60 uppercase">KP INDEX</p>
-                                                    <p className="text-xl font-mono text-white">{weatherData.solarStorms.kpIndex}</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs text-star-white/60 uppercase">LAST FLARE</p>
-                                                    <p className="text-sm text-white">{weatherData.solarStorms.lastFlare}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Aurora Forecast */}
-                                        <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-green-400/50 transition-colors">
-                                            <h3 className="text-lg font-orbitron text-green-400 mb-4">Aurora Forecast</h3>
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <p className="text-xs text-star-white/60 uppercase">VISIBILITY</p>
-                                                    <p className="text-xl font-bold text-white">{weatherData.auroraForecast.visibility}</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs text-star-white/60 uppercase">PROBABILITY</p>
-                                                    <p className="text-2xl font-mono text-white">{weatherData.auroraForecast.probability}</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs text-star-white/60 uppercase">NEXT PEAK</p>
-                                                    <p className="text-sm text-white">{weatherData.auroraForecast.nextPeak}</p>
+                                    <div className="flex-1 overflow-y-auto p-8">
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                            {/* Solar Storms */}
+                                            <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-yellow-400/50 transition-colors">
+                                                <h3 className="text-lg font-orbitron text-yellow-400 mb-4">Solar Storms</h3>
+                                                <div className="space-y-4">
+                                                    <div>
+                                                        <p className="text-xs text-star-white/60 uppercase">STATUS</p>
+                                                        <p className="text-2xl font-bold text-white">{weatherData.solarStorms.status}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-xs text-star-white/60 uppercase">KP INDEX</p>
+                                                        <p className="text-xl font-mono text-white">{weatherData.solarStorms.kpIndex}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-xs text-star-white/60 uppercase">LAST FLARE</p>
+                                                        <p className="text-sm text-white">{weatherData.solarStorms.lastFlare}</p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        {/* Radiation Alerts */}
-                                        <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-blue-400/50 transition-colors">
-                                            <h3 className="text-lg font-orbitron text-blue-400 mb-4">Radiation</h3>
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <p className="text-xs text-star-white/60 uppercase">LEVEL</p>
-                                                    <p className="text-2xl font-bold text-white">{weatherData.radiation.level}</p>
+                                            {/* Aurora Forecast */}
+                                            <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-green-400/50 transition-colors">
+                                                <h3 className="text-lg font-orbitron text-green-400 mb-4">Aurora Forecast</h3>
+                                                <div className="space-y-4">
+                                                    <div>
+                                                        <p className="text-xs text-star-white/60 uppercase">VISIBILITY</p>
+                                                        <p className="text-xl font-bold text-white">{weatherData.auroraForecast.visibility}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-xs text-star-white/60 uppercase">PROBABILITY</p>
+                                                        <p className="text-2xl font-mono text-white">{weatherData.auroraForecast.probability}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-xs text-star-white/60 uppercase">NEXT PEAK</p>
+                                                        <p className="text-sm text-white">{weatherData.auroraForecast.nextPeak}</p>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <p className="text-xs text-star-white/60 uppercase">FLUX</p>
-                                                    <p className="text-sm font-mono text-white">{weatherData.radiation.flux}</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs text-star-white/60 uppercase">RISK</p>
-                                                    <p className="text-xl text-white">{weatherData.radiation.risk}</p>
+                                            </div>
+
+                                            {/* Radiation Alerts */}
+                                            <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-blue-400/50 transition-colors">
+                                                <h3 className="text-lg font-orbitron text-blue-400 mb-4">Radiation</h3>
+                                                <div className="space-y-4">
+                                                    <div>
+                                                        <p className="text-xs text-star-white/60 uppercase">LEVEL</p>
+                                                        <p className="text-2xl font-bold text-white">{weatherData.radiation.level}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-xs text-star-white/60 uppercase">FLUX</p>
+                                                        <p className="text-sm font-mono text-white">{weatherData.radiation.flux}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-xs text-star-white/60 uppercase">RISK</p>
+                                                        <p className="text-xl text-white">{weatherData.radiation.risk}</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -627,7 +629,7 @@ export function Dashboard() {
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
                             >
-                                <div className="w-full max-w-5xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] relative">
+                                <div className="w-full max-w-5xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] md:max-h-[85vh] relative">
                                     <div className="p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
                                         <div className="flex items-center gap-4">
                                             <button
@@ -773,7 +775,7 @@ export function Dashboard() {
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
                             >
-                                <div className="w-full max-w-5xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+                                <div className="w-full max-w-5xl bg-deep-space/95 border border-cyan-glow/30 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] md:max-h-[85vh]">
                                     {/* Header */}
                                     <div className="p-6 border-b border-cyan-glow/20 bg-white/5 flex items-center justify-between">
                                         <div className="flex items-center gap-4">
@@ -821,7 +823,7 @@ export function Dashboard() {
                                                     <div className="grid grid-cols-2 gap-4 text-sm">
                                                         <div className="space-y-1">
                                                             <p className="text-[10px] text-star-white/40 uppercase tracking-wider">DIAMETER (MAX)</p>
-                                                            <p className="text-white font-mono">{neo.estimated_diameter?.meters?.estimated_diameter_max 
+                                                            <p className="text-white font-mono">{neo.estimated_diameter?.meters?.estimated_diameter_max
                                                                 ? `${Math.round(neo.estimated_diameter.meters.estimated_diameter_max)} meters`
                                                                 : 'N/A'}</p>
                                                         </div>

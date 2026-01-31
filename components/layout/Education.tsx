@@ -54,16 +54,17 @@ export function Education() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-40 bg-deep-space"
+                    className="fixed inset-0 z-40 bg-deep-space overflow-y-auto"
                 >
                     {!activeLesson ? (
                         <>
                             <LessonSelectionScreen onSelectLesson={setCurrentLesson} />
                             <button
                                 onClick={resetProgress}
-                                className="fixed bottom-8 right-8 z-50 px-4 py-2 bg-red-500/10 border border-red-500/30 rounded-full text-red-400 hover:bg-red-500/20 transition-colors font-orbitron text-xs tracking-widest uppercase"
+                                className="fixed bottom-24 right-4 md:bottom-8 md:right-8 z-50 px-4 py-2 bg-red-500/10 border border-red-500/30 rounded-full text-red-400 hover:bg-red-500/20 transition-colors font-orbitron text-xs tracking-widest uppercase backdrop-blur-md"
                             >
-                                RESET ALL PROGRESS
+                                <span className="md:hidden">RESET</span>
+                                <span className="hidden md:inline">RESET ALL PROGRESS</span>
                             </button>
                         </>
                     ) : (

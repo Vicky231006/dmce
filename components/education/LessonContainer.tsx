@@ -132,9 +132,10 @@ export function LessonContainer({ lesson, onExit }: LessonContainerProps) {
                     {/* Exit Button */}
                     <button
                         onClick={onExit}
-                        className="fixed top-8 right-8 z-40 px-4 py-2 bg-white/5 border border-white/10 rounded-full text-star-white/60 hover:text-white hover:bg-white/10 transition-colors font-orbitron text-xs tracking-widest"
+                        className="fixed top-24 right-4 md:top-8 md:right-8 z-40 px-3 py-2 md:px-4 md:py-2 bg-red-500/10 border border-red-500/30 rounded-full text-red-400 hover:text-red-300 hover:bg-red-500/20 transition-colors font-orbitron text-xs tracking-widest flex items-center justify-center"
                     >
-                        EXIT SIMULATION
+                        <span className="md:hidden text-lg">✕</span>
+                        <span className="hidden md:inline">EXIT SIMULATION</span>
                     </button>
                 </>
             )}

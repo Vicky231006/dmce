@@ -177,8 +177,8 @@ export function AIChat() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className={`fixed bottom-8 z-[60] w-16 h-16 rounded-full bg-cyan-glow/20 backdrop-blur-md border border-cyan-glow/50 flex items-center justify-center shadow-[0_0_30px_rgba(0,240,255,0.3)] hover:shadow-[0_0_50px_rgba(0,240,255,0.5)] transition-all duration-500 group ${(mode === 'dashboard' && !isNeoOverlayOpen) ? 'left-8' : 'right-8'
-                    }`}
+                className={`fixed bottom-24 md:bottom-8 z-[60] w-14 h-14 md:w-16 md:h-16 rounded-full bg-cyan-glow/20 backdrop-blur-md border border-cyan-glow/50 flex items-center justify-center shadow-[0_0_30px_rgba(0,240,255,0.3)] hover:shadow-[0_0_50px_rgba(0,240,255,0.5)] transition-all duration-500 group 
+                ${((mode === 'dashboard' && !isNeoOverlayOpen) || mode === 'education') ? 'left-4 md:left-8' : 'right-4 md:right-8'}`}
             >
                 <div className="absolute inset-0 rounded-full border border-cyan-glow/30 animate-ping opacity-20" />
                 <Sparkles size={28} className="text-cyan-glow group-hover:text-white transition-colors" />
@@ -192,8 +192,8 @@ export function AIChat() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className={`fixed bottom-28 w-[400px] h-[600px] z-[60] bg-deep-space/95 backdrop-blur-xl border border-cyan-glow/30 rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-500 ${(mode === 'dashboard' && !isNeoOverlayOpen) ? 'left-8' : 'right-8'
-                            }`}
+                        className={`fixed bottom-40 md:bottom-28 w-[90vw] md:w-[400px] h-[50vh] md:h-[600px] z-[60] bg-deep-space/95 backdrop-blur-xl border border-cyan-glow/30 rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-500 
+                        ${((mode === 'dashboard' && !isNeoOverlayOpen) || mode === 'education') ? 'left-4 md:left-8' : 'right-4 md:right-8'}`}
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between p-4 border-b border-cyan-glow/20 bg-white/5">

@@ -1,6 +1,4 @@
-'use client';
-
-import { useTimeStore } from '@/lib/store';
+import { useSidebarStore, useTimeStore } from '@/lib/store';
 import { Play, Pause } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -10,18 +8,19 @@ interface HUDProps {
 
 export function HUD({ isActive }: HUDProps) {
     const { isPaused, togglePause, timeSpeed, setSpeed } = useTimeStore();
+    const { selectedPlanet } = useSidebarStore();
 
-    if (!isActive) return null;
+    if (!isActive || selectedPlanet) return null;
 
     return (
         <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-between p-6">
-            {/* Top Bar */}
+            {/* Top Bar (Space Scope Header) - Moved to bottom on mobile */}
             <motion.div
                 initial={{ y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="flex justify-between items-start pointer-events-auto"
+                className="absolute bottom-32 left-0 right-0 text-center md:static md:text-left pointer-events-auto"
             >
-                <div>
+                <div className="inline-block md:block">
                     <h1 className="text-3xl font-orbitron text-cyan-glow tracking-wider">SPACESCOPE</h1>
                     <p className="text-xs text-star-white/60 font-mono tracking-[0.2em]">INTERPLANETARY EXPLORATION SYSTEM</p>
                 </div>
@@ -31,7 +30,7 @@ export function HUD({ isActive }: HUDProps) {
             <motion.div
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="flex justify-center items-end pointer-events-auto"
+                className="flex items-end justify-center w-full md:justify-center pointer-events-auto mt-auto"
             >
                 <div className="bg-deep-space/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 flex items-center gap-4">
                     <button
