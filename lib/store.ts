@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import * as THREE from 'three';
 
 // --- App State ---
-interface AppState {
+export interface AppState {
     mode: 'explore' | 'dashboard' | 'mission' | 'education';
     timelineIndex: number;
     isNeoOverlayOpen: boolean;

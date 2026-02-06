@@ -112,23 +112,21 @@ export const LESSON_PLANET_FORMATION: Lesson = {
     id: 'planet-formation',
     title: 'Planet Formation',
     icon: '🪐',
-    duration: 70, // 1:10
+    duration: 35, // Speed up 2x (was 70)
     xpReward: 100,
     narration: [
-        { timestamp: 0, text: "A disk of dust and gas spins around a young star.", duration: 6 },
-        { timestamp: 15, text: "Dust grains collide and stick, growing into rocks.", duration: 6 },
-        { timestamp: 30, text: "These rocks become planetesimals - building blocks of worlds.", duration: 6 },
-        { timestamp: 45, text: "Near the star, only rock survives. Further out, ice forms gas giants.", duration: 7 },
-        { timestamp: 60, text: "After millions of years, a solar system is born.", duration: 6 }
+        { timestamp: 0, text: "A disk of dust and gas spins around a young star.", duration: 3 },
+        { timestamp: 7.5, text: "Dust grains collide and stick, growing into rocks.", duration: 3 },
+        { timestamp: 15, text: "These rocks become planetesimals - building blocks of worlds.", duration: 3 },
+        { timestamp: 22.5, text: "Near the star, only rock survives. Further out, ice forms gas giants.", duration: 3.5 },
+        { timestamp: 30, text: "After millions of years, a solar system is born.", duration: 3 }
     ],
     animations: [
-        { timestamp: 0, type: 'disk-spin', params: { duration: 15 } },
-        { timestamp: 15, type: 'planetesimals', params: { count: 50, duration: 30 } },
-        { timestamp: 45, type: 'camera-move', params: { position: [0, 50, 100], duration: 5 } }
+        { timestamp: 0, type: 'disk-spin', params: { duration: 7.5 } },
+        { timestamp: 7.5, type: 'planetesimals', params: { count: 50, duration: 15 } },
+        { timestamp: 22.5, type: 'camera-move', params: { position: [0, 50, 100], duration: 2.5 } }
     ],
-    interactiveControls: [
-        { id: 'disk-temp', label: 'Disk Temp', type: 'slider', position: { x: 5, y: 80 }, effect: (val) => console.log('Temp:', val) }
-    ],
+    interactiveControls: [], // Removed Disk Temp
     quiz: [
         { question: "Where do planets come from?", options: ["Sun ejection", "Dust disk", "Asteroids", "Black holes"], correctAnswer: 1, explanation: "Planets form from the protoplanetary disk." },
         { question: "Why are inner planets rocky?", options: ["Gravity", "Too hot for gas", "Chance", "Magnetism"], correctAnswer: 1, explanation: "Heat prevents gas/ice accumulation nearby." },
@@ -143,21 +141,19 @@ export const LESSON_GRAVITY_ORBITS: Lesson = {
     id: 'gravity-orbits',
     title: 'Gravity & Orbits',
     icon: '🌍',
-    duration: 60, // 1:00
+    duration: 30, // Speed up 2x (was 60)
     xpReward: 100,
     narration: [
-        { timestamp: 0, text: "Gravity keeps planets in orbit. It's like a constant free-fall.", duration: 6 },
-        { timestamp: 15, text: "Throw a ball fast enough, and it curves around the Earth.", duration: 6 },
-        { timestamp: 30, text: "Orbits are ellipses, not perfect circles.", duration: 5 },
-        { timestamp: 45, text: "Closer planets must move faster to avoid falling in.", duration: 6 }
+        { timestamp: 0, text: "Gravity keeps planets in orbit. It's like a constant free-fall.", duration: 3 },
+        { timestamp: 7.5, text: "Throw a ball fast enough, and it curves around the Earth.", duration: 3 },
+        { timestamp: 15, text: "Orbits are ellipses, not perfect circles.", duration: 2.5 },
+        { timestamp: 22.5, text: "Closer planets must move faster to avoid falling in.", duration: 3 }
     ],
     animations: [
-        { timestamp: 0, type: 'gravity-lines', params: { duration: 15 } },
-        { timestamp: 15, type: 'orbit-start', params: { object: 'ball', speed: 'orbital', duration: 30 } }
+        { timestamp: 0, type: 'gravity-lines', params: { duration: 7.5 } },
+        { timestamp: 7.5, type: 'orbit-start', params: { object: 'ball', speed: 'orbital', duration: 15 } }
     ],
-    interactiveControls: [
-        { id: 'launch-speed', label: 'Launch Speed', type: 'slider', position: { x: 5, y: 80 }, effect: (val) => console.log('Speed:', val) }
-    ],
+    interactiveControls: [], // Removed Launch Speed
     quiz: [
         { question: "What is an orbit?", options: ["Floating", "Falling around Earth", "Flying", "Levitation"], correctAnswer: 1, explanation: "Constant free-fall matching the planet's curve." },
         { question: "Who discovered orbital laws?", options: ["Newton", "Einstein", "Kepler", "Galileo"], correctAnswer: 2, explanation: "Kepler described elliptical orbits." },
@@ -172,22 +168,20 @@ export const LESSON_SEARCH_LIFE: Lesson = {
     id: 'search-life',
     title: 'The Search for Life',
     icon: '👽',
-    duration: 75, // 1:15
+    duration: 37.5, // Speed up 2x (was 75)
     xpReward: 100,
     narration: [
-        { timestamp: 0, text: "To find life, we look for the 'Goldilocks Zone' - just right for liquid water.", duration: 7 },
-        { timestamp: 15, text: "Earth is perfect. Venus is too hot, Mars is too cold.", duration: 6 },
-        { timestamp: 30, text: "We find exoplanets by watching stars dim as planets pass in front.", duration: 7 },
-        { timestamp: 45, text: "We scan for biosignatures like oxygen and methane.", duration: 6 },
-        { timestamp: 60, text: "With billions of stars, we are likely not alone.", duration: 6 }
+        { timestamp: 0, text: "To find life, we look for the 'Goldilocks Zone' - just right for liquid water.", duration: 3.5 },
+        { timestamp: 7.5, text: "Earth is perfect. Venus is too hot, Mars is too cold.", duration: 3 },
+        { timestamp: 15, text: "We find exoplanets by watching stars dim as planets pass in front.", duration: 3.5 },
+        { timestamp: 22.5, text: "We scan for biosignatures like oxygen and methane.", duration: 3 },
+        { timestamp: 30, text: "With billions of stars, we are likely not alone.", duration: 3 }
     ],
     animations: [
-        { timestamp: 0, type: 'habitable-zone', params: { duration: 30 } },
-        { timestamp: 30, type: 'camera-move', params: { target: 'exoplanet', duration: 10 } }
+        { timestamp: 0, type: 'habitable-zone', params: { duration: 15 } },
+        { timestamp: 15, type: 'camera-move', params: { target: 'exoplanet', duration: 5 } }
     ],
-    interactiveControls: [
-        { id: 'star-type', label: 'Star Type', type: 'slider', position: { x: 5, y: 80 }, effect: (val) => console.log('Star:', val) }
-    ],
+    interactiveControls: [], // Removed Star Type
     quiz: [
         { question: "Goldilocks Zone?", options: ["Gold region", "Liquid water zone", "Bear zone", "Galaxy center"], correctAnswer: 1, explanation: "Temp allows liquid water." },
         { question: "Exoplanet?", options: ["Our planet", "Planet around other star", "Moon", "Asteroid"], correctAnswer: 1, explanation: "Planet outside our solar system." },
