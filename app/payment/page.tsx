@@ -1,12 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { CreditCard, Shield, Check, ArrowLeft, Sparkles } from 'lucide-react';
 import { useEducationStore } from '@/lib/educationStore';
 
-export default function PaymentPage() {
+export const dynamic = 'force-dynamic';
+
+function PaymentContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const returnUrl = searchParams.get('return') || '/';
@@ -173,5 +175,17 @@ export default function PaymentPage() {
                 </div>
             </motion.div>
         </div>
+    );
+}
+
+export default function PaymentPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#0a0a1a] flex items-center justify-center">
+                <div className="w-6 h-6 border-2 border-violet-500 border-t-white rounded-full animate-spin" />
+            </div>
+        }>
+            <PaymentContent />
+        </Suspense>
     );
 }

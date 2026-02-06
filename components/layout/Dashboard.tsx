@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { useState, useEffect } from 'react';
 import { getCachedData } from '@/lib/cache';
+import { API_BASE_URL } from '@/lib/utils';
 import { X, Calendar, ChevronLeft, ChevronRight, Telescope, Sparkles, Rocket, LayoutDashboard, MessageSquare, Globe, Thermometer, Flame, Sprout, Activity } from 'lucide-react';
 import { CALENDAR_DATA } from '@/lib/calendarData';
 import { COSMIC_WEATHER_DATA, SATELLITE_DATA } from '@/lib/dashboardData';
@@ -37,13 +38,13 @@ export function Dashboard() {
             const neo = await getCachedData(
                 'neo-data',
                 async () => {
-                    const res = await fetch('/api/space/neo');
+                    const res = await fetch(`${API_BASE_URL}/api/space/neo`);
                     if (!res.ok) throw new Error('Failed to fetch NEO');
                     return res.json();
                 },
                 3600000,
                 { element_count: 0, near_earth_objects: {} },
-                10000
+                60000
             );
             setNeoData(neo);
         } catch (e) { console.error(e); }
@@ -53,13 +54,13 @@ export function Dashboard() {
             const apod = await getCachedData(
                 'apod-data',
                 async () => {
-                    const res = await fetch('/api/space/apod');
+                    const res = await fetch(`${API_BASE_URL}/api/space/apod`);
                     if (!res.ok) throw new Error('Failed to fetch APOD');
                     return res.json();
                 },
                 86400000,
                 null,
-                10000
+                60000
             );
             setApodData(apod);
         } catch (e) { console.error(e); }
@@ -69,13 +70,13 @@ export function Dashboard() {
             const iss = await getCachedData(
                 'iss-data',
                 async () => {
-                    const res = await fetch('/api/space/iss');
+                    const res = await fetch(`${API_BASE_URL}/api/space/iss`);
                     if (!res.ok) throw new Error('Failed to fetch ISS');
                     return res.json();
                 },
                 60000,
                 { latitude: 51.5074, longitude: -0.1278, altitude: 408, velocity: 27580 },
-                10000
+                60000
             );
             setIssData(iss);
         } catch (e) { console.error(e); }
@@ -85,13 +86,13 @@ export function Dashboard() {
             const mars = await getCachedData(
                 'mars-data',
                 async () => {
-                    const res = await fetch('/api/space/mars');
+                    const res = await fetch(`${API_BASE_URL}/api/space/mars`);
                     if (!res.ok) throw new Error('Failed to fetch Mars');
                     return res.json();
                 },
                 86400000,
                 { photos: [] },
-                10000
+                60000
             );
             setMarsData(mars);
         } catch (e) { console.error(e); }
@@ -101,13 +102,13 @@ export function Dashboard() {
             const weather = await getCachedData(
                 'weather-data',
                 async () => {
-                    const res = await fetch('/api/space/weather');
+                    const res = await fetch(`${API_BASE_URL}/api/space/weather`);
                     if (!res.ok) throw new Error('Failed to fetch Weather');
                     return res.json();
                 },
                 60000,
                 COSMIC_WEATHER_DATA,
-                10000
+                60000
             );
             setWeatherData(weather);
         } catch (e) { console.error(e); }

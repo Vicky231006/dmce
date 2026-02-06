@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, X, Sparkles, MessageSquare } from 'lucide-react';
 import { GlowButton } from '@/components/ui/GlowButton';
 import ReactMarkdown from 'react-markdown';
+import { API_BASE_URL } from '@/lib/utils';
 
 interface Message {
     role: 'user' | 'assistant';
@@ -93,11 +94,11 @@ export function AIChat() {
                     // Fetch current dashboard data to provide context
                     try {
                         const [neoRes, issRes, marsRes, apodRes, weatherRes] = await Promise.all([
-                            fetch('/api/space/neo'),
-                            fetch('/api/space/iss'),
-                            fetch('/api/space/mars'),
-                            fetch('/api/space/apod'),
-                            fetch('/api/space/weather')
+                            fetch(`${API_BASE_URL}/api/space/neo`),
+                            fetch(`${API_BASE_URL}/api/space/iss`),
+                            fetch(`${API_BASE_URL}/api/space/mars`),
+                            fetch(`${API_BASE_URL}/api/space/apod`),
+                            fetch(`${API_BASE_URL}/api/space/weather`)
                         ]);
 
                         const neo = await neoRes.json();
@@ -149,7 +150,7 @@ export function AIChat() {
                 parts: [{ text: msg.content }]
             }));
 
-            const response = await fetch('/api/ai/chat', {
+            const response = await fetch(`${API_BASE_URL}/api/ai/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
