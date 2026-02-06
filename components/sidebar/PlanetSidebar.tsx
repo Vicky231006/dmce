@@ -151,12 +151,9 @@ function MainMenu({
                             VISIT <ChevronRight size={16} />
                         </HexButton>
 
-                        <div className="flex gap-2">
-                            <HexButton className="flex-1">SURFACE</HexButton>
-                            <HexButton className="flex-1" onClick={togglePause}>
-                                {isPaused ? 'RESUME' : 'ORBIT'}
-                            </HexButton>
-                        </div>
+                        <HexButton onClick={togglePause}>
+                            {isPaused ? 'RESUME' : 'ORBIT'}
+                        </HexButton>
 
                         <HexButton onClick={() => onViewChange('encyclopedia')}>
                             ENCYCLOPEDIA <ChevronRight size={16} />
