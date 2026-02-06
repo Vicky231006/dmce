@@ -8,8 +8,9 @@ import { Planet } from './celestial/Planet';
 import { AsteroidBelt } from './celestial/AsteroidBelt';
 import { PlanetClickHandler } from './PlanetClickHandler';
 import { CameraController } from './CameraController';
-import { useSidebarStore } from '@/lib/store';
+import { useSidebarStore, useAppStore } from '@/lib/store';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { NightSkyTransitionHandler } from '../nightsky/NightSkyTransitionHandler';
 
 interface SolarSystemProps {
     loadState: string;
@@ -48,10 +49,12 @@ export function SolarSystem({ loadState }: SolarSystemProps) {
         );
     }
 
+    const isNightSkyMode = useAppStore(state => state.isNightSkyMode);
+
     return (
         <Canvas
             camera={{ position: [0, 50, 100], fov: 60, near: 0.1, far: 2000 }}
-            className="absolute inset-0 z-0"
+            className={`absolute inset-0 z-0 transition-opacity duration-1000 ${isNightSkyMode ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
             gl={{ antialias: true, alpha: false }}
             dpr={[1, 2]} // Device pixel ratio (performance)
         >
@@ -109,6 +112,9 @@ export function SolarSystem({ loadState }: SolarSystemProps) {
 
                 {/* Click Handler */}
                 <PlanetClickHandler onPlanetClick={setSelectedPlanet} />
+
+                {/* Night Sky Transition Handler */}
+                <NightSkyTransitionHandler />
 
                 {/* Post-processing (Bloom for sun glow) */}
                 <EffectComposer>

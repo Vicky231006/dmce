@@ -10,6 +10,7 @@ interface AppState {
     dashboardOverlay: 'none' | 'calendar' | 'weather' | 'satellite';
     selectedCalendarEvent: any | null; // Using any to avoid circular dependency with calendarData for now
     selectedSatelliteImpact: any | null;
+    isNightSkyMode: boolean; // Toggle to hide Solar System view
 
     setMode: (mode: AppState['mode']) => void;
     setTimelineIndex: (index: number) => void;
@@ -17,6 +18,7 @@ interface AppState {
     setDashboardOverlay: (overlay: AppState['dashboardOverlay']) => void;
     setSelectedCalendarEvent: (event: any | null) => void;
     setSelectedSatelliteImpact: (impact: any | null) => void;
+    setNightSkyMode: (isNight: boolean) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -26,6 +28,7 @@ export const useAppStore = create<AppState>((set) => ({
     dashboardOverlay: 'none',
     selectedCalendarEvent: null,
     selectedSatelliteImpact: null,
+    isNightSkyMode: false,
 
     setMode: (mode) => set({ mode }),
     setTimelineIndex: (index) => set({ timelineIndex: index }),
@@ -33,6 +36,7 @@ export const useAppStore = create<AppState>((set) => ({
     setDashboardOverlay: (overlay) => set({ dashboardOverlay: overlay }),
     setSelectedCalendarEvent: (event) => set({ selectedCalendarEvent: event }),
     setSelectedSatelliteImpact: (impact) => set({ selectedSatelliteImpact: impact }),
+    setNightSkyMode: (isNight) => set({ isNightSkyMode: isNight }),
 }));
 
 // --- Time Control State ---
