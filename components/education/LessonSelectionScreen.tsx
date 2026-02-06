@@ -1,23 +1,50 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, CheckCircle, Play, Star } from 'lucide-react';
+import { Lock, CheckCircle, Play, Star, Sparkles } from 'lucide-react';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { useEducationStore } from '@/lib/educationStore';
 import { LESSONS } from '@/lib/lessonData';
+import { PremiumModal } from './PremiumModal';
 
 export function LessonSelectionScreen({ onSelectLesson }: { onSelectLesson: (id: string) => void }) {
-    const { lessonProgress, totalXP } = useEducationStore();
+    const { lessonProgress, totalXP, hasPremiumAccess } = useEducationStore();
+    const [showPremiumModal, setShowPremiumModal] = useState(false);
 
-    const isLessonUnlocked = (index: number) => {
+    const isLessonUnlocked = (index: number, isPremium: boolean) => {
+        // First lesson always unlocked
         if (index === 0) return true;
+
+        // Premium lessons require premium access + previous lesson completion
+        if (isPremium && !hasPremiumAccess) return false;
+
         const previousLesson = LESSONS[index - 1];
         const progress = lessonProgress.get(previousLesson.id);
         return progress?.completed || false;
     };
 
+    const handleLessonClick = (lesson: typeof LESSONS[0], index: number) => {
+        const isPremium = lesson.isPremium || false;
+        const isUnlocked = isLessonUnlocked(index, isPremium);
+
+        // If premium and locked (no access), show modal
+        if (isPremium && !hasPremiumAccess) {
+            setShowPremiumModal(true);
+            return;
+        }
+
+        // If unlocked, proceed
+        if (isUnlocked) {
+            onSelectLesson(lesson.id);
+        }
+    };
+
     return (
         <div className="min-h-screen p-4 md:p-8 pt-24 md:pt-24 bg-gradient-to-b from-deep-space to-void-black">
+            {/* Premium Modal */}
+            <PremiumModal isOpen={showPremiumModal} onClose={() => setShowPremiumModal(false)} />
+
             {/* Header */}
             <motion.div
                 initial={{ y: -50, opacity: 0 }}
@@ -52,8 +79,10 @@ export function LessonSelectionScreen({ onSelectLesson }: { onSelectLesson: (id:
             <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 pb-72 md:pb-20">
                 {LESSONS.map((lesson, index) => {
                     const progress = lessonProgress.get(lesson.id);
-                    const isUnlocked = isLessonUnlocked(index);
+                    const isPremium = lesson.isPremium || false;
+                    const isUnlocked = isLessonUnlocked(index, isPremium);
                     const isCompleted = progress?.completed || false;
+                    const isPremiumLocked = isPremium && !hasPremiumAccess;
 
                     return (
                         <motion.div
@@ -63,15 +92,37 @@ export function LessonSelectionScreen({ onSelectLesson }: { onSelectLesson: (id:
                             transition={{ delay: index * 0.1 }}
                         >
                             <GlassCard
-                                glow={isUnlocked && !isCompleted}
-                                className={`relative overflow-hidden transition-all duration-300 h-full flex flex-col ${isUnlocked
-                                    ? 'cursor-pointer hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(0,240,255,0.2)]'
-                                    : 'opacity-50 cursor-not-allowed grayscale'
+                                glow={isUnlocked && !isCompleted && !isPremiumLocked}
+                                className={`relative overflow-hidden transition-all duration-300 h-full flex flex-col ${isPremiumLocked
+                                        ? 'cursor-pointer hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:border-violet-500/50'
+                                        : isUnlocked
+                                            ? 'cursor-pointer hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(0,240,255,0.2)]'
+                                            : 'opacity-50 cursor-not-allowed grayscale'
                                     }`}
-                                onClick={() => isUnlocked && onSelectLesson(lesson.id)}
+                                onClick={() => handleLessonClick(lesson, index)}
                             >
-                                {/* Lock Overlay */}
-                                {!isUnlocked && (
+                                {/* Premium Badge */}
+                                {isPremium && (
+                                    <div className="absolute top-4 left-4 z-10 flex items-center gap-1 bg-violet-500/20 border border-violet-500/40 rounded-full px-3 py-1">
+                                        <Sparkles size={12} className="text-violet-400" />
+                                        <span className="text-[10px] font-orbitron text-violet-300 tracking-wider">PREMIUM</span>
+                                    </div>
+                                )}
+
+                                {/* Lock Overlay - Premium (Violet) */}
+                                {isPremiumLocked && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[2px] z-10">
+                                        <div className="flex flex-col items-center gap-2">
+                                            <div className="p-3 bg-violet-500/20 rounded-full border border-violet-500/40">
+                                                <Lock size={32} className="text-violet-400" />
+                                            </div>
+                                            <span className="text-xs font-mono text-violet-300 uppercase tracking-widest">Premium</span>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Lock Overlay - Standard (requires previous completion) */}
+                                {!isUnlocked && !isPremiumLocked && (
                                     <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-[2px] z-10">
                                         <div className="flex flex-col items-center gap-2">
                                             <Lock size={48} className="text-star-white/40" />
@@ -99,8 +150,8 @@ export function LessonSelectionScreen({ onSelectLesson }: { onSelectLesson: (id:
                                     </h3>
 
                                     {/* Lesson Number */}
-                                    <p className="text-xs font-mono text-cyan-glow/60 text-center mb-6 uppercase tracking-[0.2em]">
-                                        Module 0{index + 1}
+                                    <p className={`text-xs font-mono text-center mb-6 uppercase tracking-[0.2em] ${isPremium ? 'text-violet-400/60' : 'text-cyan-glow/60'}`}>
+                                        Module {String(index + 1).padStart(2, '0')}
                                     </p>
 
                                     <div className="mt-auto">
@@ -120,16 +171,22 @@ export function LessonSelectionScreen({ onSelectLesson }: { onSelectLesson: (id:
                                                     <span className="text-plasma-purple font-mono">+{progress?.xpEarned}</span>
                                                 </div>
                                             </div>
-                                        ) : isUnlocked ? (
+                                        ) : isUnlocked && !isPremiumLocked ? (
                                             <div className="text-center space-y-4">
-                                                <div className="inline-flex items-center gap-2 bg-cyan-glow/10 border border-cyan-glow/50 px-6 py-3 rounded-full group-hover:bg-cyan-glow/20 transition-colors">
-                                                    <Play size={18} className="text-cyan-glow fill-cyan-glow" />
-                                                    <span className="text-cyan-glow font-orbitron text-sm tracking-wider">START SIMULATION</span>
+                                                <div className={`inline-flex items-center gap-2 ${isPremium ? 'bg-violet-500/10 border-violet-500/50' : 'bg-cyan-glow/10 border-cyan-glow/50'} border px-6 py-3 rounded-full group-hover:bg-cyan-glow/20 transition-colors`}>
+                                                    <Play size={18} className={isPremium ? 'text-violet-400 fill-violet-400' : 'text-cyan-glow fill-cyan-glow'} />
+                                                    <span className={`${isPremium ? 'text-violet-400' : 'text-cyan-glow'} font-orbitron text-sm tracking-wider`}>START SIMULATION</span>
                                                 </div>
                                                 <div className="flex items-center justify-center gap-2 text-xs text-star-white/40 font-mono">
                                                     <Star size={12} className="text-plasma-purple" />
                                                     <span>{lesson.xpReward} XP AVAILABLE</span>
                                                 </div>
+                                            </div>
+                                        ) : isPremiumLocked ? (
+                                            <div className="text-center p-4 bg-violet-500/5 rounded-lg border border-violet-500/20">
+                                                <p className="text-xs text-violet-300/60 font-mono">
+                                                    Unlock with Premium Access
+                                                </p>
                                             </div>
                                         ) : (
                                             <div className="text-center p-4 bg-white/5 rounded-lg border border-white/5">
@@ -148,3 +205,4 @@ export function LessonSelectionScreen({ onSelectLesson }: { onSelectLesson: (id:
         </div>
     );
 }
+

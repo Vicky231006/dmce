@@ -21,7 +21,7 @@ export function YearTransition({ year, title, isActive }: YearTransitionProps) {
             transition={{ duration: 0.6 }}
             className="h-screen flex items-center justify-center relative overflow-hidden"
         >
-            {/* Animated background */}
+            {/* Animated background - Always swirling */}
             <div className="absolute inset-0">
                 <motion.div
                     animate={{
@@ -56,15 +56,17 @@ export function YearTransition({ year, title, isActive }: YearTransitionProps) {
                     />
                 </motion.div>
 
-                {/* Title (Movie Style) */}
-                <motion.h3
-                    initial={{ y: 50, opacity: 0 }}
-                    animate={{ y: isInView ? 0 : 50, opacity: isInView ? 1 : 0 }}
-                    transition={{ delay: 0.6, duration: 0.6 }}
-                    className="text-3xl font-orbitron text-star-white tracking-wide"
-                >
-                    {title}
-                </motion.h3>
+                {/* Title (Movie Style) - Only show if title is not empty */}
+                {title && (
+                    <motion.h3
+                        initial={{ y: 50, opacity: 0 }}
+                        animate={{ y: isInView ? 0 : 50, opacity: isInView ? 1 : 0 }}
+                        transition={{ delay: 0.6, duration: 0.6 }}
+                        className="text-3xl font-orbitron text-star-white tracking-wide"
+                    >
+                        {title}
+                    </motion.h3>
+                )}
 
                 {/* Decorative elements */}
                 <motion.div
@@ -75,7 +77,7 @@ export function YearTransition({ year, title, isActive }: YearTransitionProps) {
                 />
             </div>
 
-            {/* Particles */}
+            {/* Particles - Swirling effect when in view */}
             {isInView && (
                 <div className="absolute inset-0 pointer-events-none">
                     {Array.from({ length: 20 }).map((_, i) => (

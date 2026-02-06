@@ -31,6 +31,7 @@ export interface Lesson {
     icon: string;
     duration: number; // Total seconds
     xpReward: number;
+    isPremium?: boolean;
     narration: LessonNarration[];
     animations: LessonAnimation[];
     interactiveControls: LessonInteractive[];
@@ -111,23 +112,21 @@ export const LESSON_PLANET_FORMATION: Lesson = {
     id: 'planet-formation',
     title: 'Planet Formation',
     icon: '🪐',
-    duration: 70, // 1:10
+    duration: 35, // Speed up 2x (was 70)
     xpReward: 100,
     narration: [
-        { timestamp: 0, text: "A disk of dust and gas spins around a young star.", duration: 6 },
-        { timestamp: 15, text: "Dust grains collide and stick, growing into rocks.", duration: 6 },
-        { timestamp: 30, text: "These rocks become planetesimals - building blocks of worlds.", duration: 6 },
-        { timestamp: 45, text: "Near the star, only rock survives. Further out, ice forms gas giants.", duration: 7 },
-        { timestamp: 60, text: "After millions of years, a solar system is born.", duration: 6 }
+        { timestamp: 0, text: "A disk of dust and gas spins around a young star.", duration: 3 },
+        { timestamp: 7.5, text: "Dust grains collide and stick, growing into rocks.", duration: 3 },
+        { timestamp: 15, text: "These rocks become planetesimals - building blocks of worlds.", duration: 3 },
+        { timestamp: 22.5, text: "Near the star, only rock survives. Further out, ice forms gas giants.", duration: 3.5 },
+        { timestamp: 30, text: "After millions of years, a solar system is born.", duration: 3 }
     ],
     animations: [
-        { timestamp: 0, type: 'disk-spin', params: { duration: 15 } },
-        { timestamp: 15, type: 'planetesimals', params: { count: 50, duration: 30 } },
-        { timestamp: 45, type: 'camera-move', params: { position: [0, 50, 100], duration: 5 } }
+        { timestamp: 0, type: 'disk-spin', params: { duration: 7.5 } },
+        { timestamp: 7.5, type: 'planetesimals', params: { count: 50, duration: 15 } },
+        { timestamp: 22.5, type: 'camera-move', params: { position: [0, 50, 100], duration: 2.5 } }
     ],
-    interactiveControls: [
-        { id: 'disk-temp', label: 'Disk Temp', type: 'slider', position: { x: 5, y: 80 }, effect: (val) => console.log('Temp:', val) }
-    ],
+    interactiveControls: [], // Removed Disk Temp
     quiz: [
         { question: "Where do planets come from?", options: ["Sun ejection", "Dust disk", "Asteroids", "Black holes"], correctAnswer: 1, explanation: "Planets form from the protoplanetary disk." },
         { question: "Why are inner planets rocky?", options: ["Gravity", "Too hot for gas", "Chance", "Magnetism"], correctAnswer: 1, explanation: "Heat prevents gas/ice accumulation nearby." },
@@ -142,21 +141,19 @@ export const LESSON_GRAVITY_ORBITS: Lesson = {
     id: 'gravity-orbits',
     title: 'Gravity & Orbits',
     icon: '🌍',
-    duration: 60, // 1:00
+    duration: 30, // Speed up 2x (was 60)
     xpReward: 100,
     narration: [
-        { timestamp: 0, text: "Gravity keeps planets in orbit. It's like a constant free-fall.", duration: 6 },
-        { timestamp: 15, text: "Throw a ball fast enough, and it curves around the Earth.", duration: 6 },
-        { timestamp: 30, text: "Orbits are ellipses, not perfect circles.", duration: 5 },
-        { timestamp: 45, text: "Closer planets must move faster to avoid falling in.", duration: 6 }
+        { timestamp: 0, text: "Gravity keeps planets in orbit. It's like a constant free-fall.", duration: 3 },
+        { timestamp: 7.5, text: "Throw a ball fast enough, and it curves around the Earth.", duration: 3 },
+        { timestamp: 15, text: "Orbits are ellipses, not perfect circles.", duration: 2.5 },
+        { timestamp: 22.5, text: "Closer planets must move faster to avoid falling in.", duration: 3 }
     ],
     animations: [
-        { timestamp: 0, type: 'gravity-lines', params: { duration: 15 } },
-        { timestamp: 15, type: 'orbit-start', params: { object: 'ball', speed: 'orbital', duration: 30 } }
+        { timestamp: 0, type: 'gravity-lines', params: { duration: 7.5 } },
+        { timestamp: 7.5, type: 'orbit-start', params: { object: 'ball', speed: 'orbital', duration: 15 } }
     ],
-    interactiveControls: [
-        { id: 'launch-speed', label: 'Launch Speed', type: 'slider', position: { x: 5, y: 80 }, effect: (val) => console.log('Speed:', val) }
-    ],
+    interactiveControls: [], // Removed Launch Speed
     quiz: [
         { question: "What is an orbit?", options: ["Floating", "Falling around Earth", "Flying", "Levitation"], correctAnswer: 1, explanation: "Constant free-fall matching the planet's curve." },
         { question: "Who discovered orbital laws?", options: ["Newton", "Einstein", "Kepler", "Galileo"], correctAnswer: 2, explanation: "Kepler described elliptical orbits." },
@@ -171,22 +168,20 @@ export const LESSON_SEARCH_LIFE: Lesson = {
     id: 'search-life',
     title: 'The Search for Life',
     icon: '👽',
-    duration: 75, // 1:15
+    duration: 37.5, // Speed up 2x (was 75)
     xpReward: 100,
     narration: [
-        { timestamp: 0, text: "To find life, we look for the 'Goldilocks Zone' - just right for liquid water.", duration: 7 },
-        { timestamp: 15, text: "Earth is perfect. Venus is too hot, Mars is too cold.", duration: 6 },
-        { timestamp: 30, text: "We find exoplanets by watching stars dim as planets pass in front.", duration: 7 },
-        { timestamp: 45, text: "We scan for biosignatures like oxygen and methane.", duration: 6 },
-        { timestamp: 60, text: "With billions of stars, we are likely not alone.", duration: 6 }
+        { timestamp: 0, text: "To find life, we look for the 'Goldilocks Zone' - just right for liquid water.", duration: 3.5 },
+        { timestamp: 7.5, text: "Earth is perfect. Venus is too hot, Mars is too cold.", duration: 3 },
+        { timestamp: 15, text: "We find exoplanets by watching stars dim as planets pass in front.", duration: 3.5 },
+        { timestamp: 22.5, text: "We scan for biosignatures like oxygen and methane.", duration: 3 },
+        { timestamp: 30, text: "With billions of stars, we are likely not alone.", duration: 3 }
     ],
     animations: [
-        { timestamp: 0, type: 'habitable-zone', params: { duration: 30 } },
-        { timestamp: 30, type: 'camera-move', params: { target: 'exoplanet', duration: 10 } }
+        { timestamp: 0, type: 'habitable-zone', params: { duration: 15 } },
+        { timestamp: 15, type: 'camera-move', params: { target: 'exoplanet', duration: 5 } }
     ],
-    interactiveControls: [
-        { id: 'star-type', label: 'Star Type', type: 'slider', position: { x: 5, y: 80 }, effect: (val) => console.log('Star:', val) }
-    ],
+    interactiveControls: [], // Removed Star Type
     quiz: [
         { question: "Goldilocks Zone?", options: ["Gold region", "Liquid water zone", "Bear zone", "Galaxy center"], correctAnswer: 1, explanation: "Temp allows liquid water." },
         { question: "Exoplanet?", options: ["Our planet", "Planet around other star", "Moon", "Asteroid"], correctAnswer: 1, explanation: "Planet outside our solar system." },
@@ -196,4 +191,157 @@ export const LESSON_SEARCH_LIFE: Lesson = {
     ]
 };
 
-export const LESSONS = [LESSON_BIG_BANG, LESSON_STAR_CYCLE, LESSON_PLANET_FORMATION, LESSON_GRAVITY_ORBITS, LESSON_SEARCH_LIFE];
+// PREMIUM LESSONS
+
+export const LESSON_DARK_MATTER: Lesson = {
+    id: 'dark-matter',
+    title: 'Dark Matter & Dark Energy',
+    icon: '🌑',
+    duration: 80,
+    xpReward: 150,
+    isPremium: true,
+    narration: [
+        { timestamp: 0, text: "Only 5% of the universe is visible matter. The rest is dark.", duration: 6 },
+        { timestamp: 15, text: "Dark matter is invisible but pulls galaxies together with gravity.", duration: 7 },
+        { timestamp: 30, text: "Dark energy is even stranger — it pushes the universe apart.", duration: 6 },
+        { timestamp: 45, text: "The universe is accelerating its expansion because of dark energy.", duration: 7 },
+        { timestamp: 60, text: "We detect dark matter by how it bends light — gravitational lensing.", duration: 7 }
+    ],
+    animations: [
+        { timestamp: 0, type: 'universe-expand', params: { scale: { from: 1, to: 50 }, duration: 15, grid: true } },
+        { timestamp: 30, type: 'gravity-lines', params: { duration: 20 } }
+    ],
+    interactiveControls: [],
+    quiz: [
+        { question: "What percentage of the universe is visible matter?", options: ["50%", "27%", "5%", "95%"], correctAnswer: 2, explanation: "Only about 5% is ordinary matter." },
+        { question: "What does dark matter do?", options: ["Emits light", "Provides gravity", "Creates black holes", "Produces heat"], correctAnswer: 1, explanation: "Dark matter has gravitational effects." },
+        { question: "What does dark energy do?", options: ["Slows expansion", "Accelerates expansion", "Creates stars", "Nothing"], correctAnswer: 1, explanation: "Dark energy accelerates cosmic expansion." },
+        { question: "How do we detect dark matter?", options: ["Telescopes", "Gravitational lensing", "Radio waves", "Sound"], correctAnswer: 1, explanation: "We observe how it bends light from distant objects." },
+        { question: "Dark matter is made of...", options: ["Atoms", "Unknown particles", "Black holes", "Antimatter"], correctAnswer: 1, explanation: "We don't yet know what dark matter is made of." }
+    ]
+};
+
+export const LESSON_STELLAR_DEATHS: Lesson = {
+    id: 'stellar-deaths',
+    title: 'Stellar Deaths — Supernovae & Beyond',
+    icon: '💀',
+    duration: 85,
+    xpReward: 150,
+    isPremium: true,
+    narration: [
+        { timestamp: 0, text: "Stars don't live forever. Their deaths shape the universe.", duration: 6 },
+        { timestamp: 15, text: "Massive stars explode as supernovae — brighter than entire galaxies.", duration: 7 },
+        { timestamp: 30, text: "These explosions create heavy elements like gold and uranium.", duration: 6 },
+        { timestamp: 45, text: "What remains? Neutron stars or black holes.", duration: 5 },
+        { timestamp: 60, text: "Smaller stars like our Sun become white dwarfs and fade away.", duration: 7 }
+    ],
+    animations: [
+        { timestamp: 15, type: 'supernova', params: { duration: 15 } },
+        { timestamp: 45, type: 'collapse', params: { duration: 10 } }
+    ],
+    interactiveControls: [],
+    quiz: [
+        { question: "What is a supernova?", options: ["New star", "Exploding star", "Black hole", "Galaxy"], correctAnswer: 1, explanation: "A supernova is a massive stellar explosion." },
+        { question: "What creates gold?", options: ["Big Bang", "Stars fusing", "Supernovae", "Planets"], correctAnswer: 2, explanation: "Heavy elements are forged in supernova explosions." },
+        { question: "What can a supernova leave behind?", options: ["Nothing", "Neutron star", "New galaxy", "Planet"], correctAnswer: 1, explanation: "Neutron stars or black holes remain." },
+        { question: "What will our Sun become?", options: ["Black hole", "Neutron star", "White dwarf", "Supernova"], correctAnswer: 2, explanation: "Our Sun will become a white dwarf." },
+        { question: "Neutron stars are...", options: ["Hot gas", "Incredibly dense", "Empty", "Made of light"], correctAnswer: 1, explanation: "Neutron stars are extremely dense." }
+    ]
+};
+
+export const LESSON_BLACK_HOLES: Lesson = {
+    id: 'black-holes',
+    title: 'Black Holes & Spacetime',
+    icon: '🕳️',
+    duration: 90,
+    xpReward: 150,
+    isPremium: true,
+    narration: [
+        { timestamp: 0, text: "Black holes are regions where gravity is so strong, nothing escapes.", duration: 7 },
+        { timestamp: 15, text: "They form when massive stars collapse completely.", duration: 6 },
+        { timestamp: 30, text: "The event horizon is the point of no return.", duration: 5 },
+        { timestamp: 45, text: "Time slows down near a black hole — this is called time dilation.", duration: 7 },
+        { timestamp: 60, text: "Supermassive black holes sit at the center of most galaxies.", duration: 6 }
+    ],
+    animations: [
+        { timestamp: 0, type: 'collapse', params: { duration: 15 } },
+        { timestamp: 30, type: 'gravity-lines', params: { duration: 30 } }
+    ],
+    interactiveControls: [],
+    quiz: [
+        { question: "What is a black hole?", options: ["Empty space", "Region of extreme gravity", "Dark planet", "Wormhole"], correctAnswer: 1, explanation: "Black holes have gravity so strong nothing escapes." },
+        { question: "What is the event horizon?", options: ["Black hole surface", "Point of no return", "Center", "Edge of space"], correctAnswer: 1, explanation: "The boundary beyond which nothing can escape." },
+        { question: "What happens to time near a black hole?", options: ["Speeds up", "Slows down", "Stops", "Reverses"], correctAnswer: 1, explanation: "Time dilation causes time to slow down." },
+        { question: "Where are supermassive black holes?", options: ["Nowhere", "Galaxy centers", "Everywhere", "Stars"], correctAnswer: 1, explanation: "Most galaxies have one at their center." },
+        { question: "Can light escape a black hole?", options: ["Yes", "No", "Sometimes", "Only X-rays"], correctAnswer: 1, explanation: "Nothing can escape once past the event horizon." }
+    ]
+};
+
+export const LESSON_EXOPLANETS: Lesson = {
+    id: 'exoplanets',
+    title: 'Exoplanets & Habitability',
+    icon: '🌍',
+    duration: 80,
+    xpReward: 150,
+    isPremium: true,
+    narration: [
+        { timestamp: 0, text: "Exoplanets are worlds orbiting other stars.", duration: 5 },
+        { timestamp: 15, text: "We've discovered thousands using the transit and radial velocity methods.", duration: 7 },
+        { timestamp: 30, text: "Some are rocky like Earth, others are gas giants larger than Jupiter.", duration: 6 },
+        { timestamp: 45, text: "The habitable zone is where liquid water could exist.", duration: 6 },
+        { timestamp: 60, text: "Proxima Centauri b is the closest known exoplanet to us.", duration: 6 }
+    ],
+    animations: [
+        { timestamp: 0, type: 'habitable-zone', params: { duration: 30 } },
+        { timestamp: 30, type: 'orbit-start', params: { object: 'exoplanet', speed: 'orbital', duration: 30 } }
+    ],
+    interactiveControls: [],
+    quiz: [
+        { question: "What is an exoplanet?", options: ["A moon", "Planet outside our solar system", "Asteroid", "Comet"], correctAnswer: 1, explanation: "Exoplanets orbit other stars." },
+        { question: "How do we find exoplanets?", options: ["Direct photos", "Transit method", "Landing probes", "Radio signals"], correctAnswer: 1, explanation: "We watch stars dim as planets pass in front." },
+        { question: "What is the habitable zone?", options: ["Hot zone", "Where water can be liquid", "Cold zone", "Radiation free"], correctAnswer: 1, explanation: "The distance where temperatures allow liquid water." },
+        { question: "Closest exoplanet to Earth?", options: ["Mars", "Kepler-22b", "Proxima Centauri b", "TRAPPIST-1e"], correctAnswer: 2, explanation: "Proxima Centauri b is about 4 light-years away." },
+        { question: "What makes a planet habitable?", options: ["Size only", "Water, atmosphere, temperature", "Being rocky", "Having moons"], correctAnswer: 1, explanation: "Multiple factors determine habitability." }
+    ]
+};
+
+export const LESSON_ASTROBIOLOGY: Lesson = {
+    id: 'astrobiology',
+    title: 'Astrobiology & the Future of Humanity',
+    icon: '🧬',
+    duration: 85,
+    xpReward: 150,
+    isPremium: true,
+    narration: [
+        { timestamp: 0, text: "Astrobiology is the study of life in the universe.", duration: 5 },
+        { timestamp: 15, text: "Life on Earth shows us what to look for elsewhere.", duration: 6 },
+        { timestamp: 30, text: "Extremophiles survive in conditions once thought impossible.", duration: 6 },
+        { timestamp: 45, text: "Mars and Europa are prime targets in our search for life.", duration: 6 },
+        { timestamp: 60, text: "Humanity may one day become a multi-planetary species.", duration: 6 }
+    ],
+    animations: [
+        { timestamp: 0, type: 'habitable-zone', params: { duration: 30 } },
+        { timestamp: 45, type: 'camera-move', params: { target: 'mars', duration: 15 } }
+    ],
+    interactiveControls: [],
+    quiz: [
+        { question: "What is astrobiology?", options: ["Star study", "Study of life in universe", "Alien contact", "Space travel"], correctAnswer: 1, explanation: "Astrobiology searches for life beyond Earth." },
+        { question: "What are extremophiles?", options: ["Aliens", "Life in extreme conditions", "Extinct species", "Bacteria only"], correctAnswer: 1, explanation: "Organisms that thrive in extreme environments." },
+        { question: "Where might we find life in our solar system?", options: ["Venus surface", "Jupiter", "Europa", "Mercury"], correctAnswer: 2, explanation: "Europa's subsurface ocean is a promising target." },
+        { question: "What do we search for on Mars?", options: ["Aliens", "Signs of past/present microbial life", "Plants", "Water creatures"], correctAnswer: 1, explanation: "We look for biosignatures and microbial evidence." },
+        { question: "Why become multi-planetary?", options: ["Fun", "Survival of humanity", "Trade", "Tourism"], correctAnswer: 1, explanation: "Spreading to other worlds ensures our long-term survival." }
+    ]
+};
+
+export const LESSONS = [
+    LESSON_BIG_BANG,
+    LESSON_STAR_CYCLE,
+    LESSON_PLANET_FORMATION,
+    LESSON_GRAVITY_ORBITS,
+    LESSON_SEARCH_LIFE,
+    LESSON_DARK_MATTER,
+    LESSON_STELLAR_DEATHS,
+    LESSON_BLACK_HOLES,
+    LESSON_EXOPLANETS,
+    LESSON_ASTROBIOLOGY
+];
