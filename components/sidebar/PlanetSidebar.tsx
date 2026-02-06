@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { SurfaceTab } from './tabs/SurfaceTab';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSidebarStore, useTimeStore, useAppStore } from '@/lib/store';
@@ -151,9 +152,12 @@ function MainMenu({
                             VISIT <ChevronRight size={16} />
                         </HexButton>
 
-                        <HexButton onClick={togglePause}>
-                            {isPaused ? 'RESUME' : 'ORBIT'}
-                        </HexButton>
+                        <div className="flex gap-2">
+                            <HexButton className="flex-1" onClick={() => onViewChange('surface')}>SURFACE</HexButton>
+                            <HexButton className="flex-1" onClick={togglePause}>
+                                {isPaused ? 'RESUME' : 'ORBIT'}
+                            </HexButton>
+                        </div>
 
                         <HexButton onClick={() => onViewChange('encyclopedia')}>
                             ENCYCLOPEDIA <ChevronRight size={16} />
@@ -270,6 +274,36 @@ function DataRow({ label, value }: { label: string; value: string }) {
     );
 }
 
+// Stage 3.5: Surface View
+function SurfaceView({ planet, onBack }: { planet: string; onBack: () => void }) {
+    return (
+        <motion.div
+            initial={{ x: -100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -100, opacity: 0 }}
+            className="fixed left-0 top-0 h-screen w-full md:w-[450px] z-[55] bg-deep-space/95 backdrop-blur-xl border-r border-cyan-glow/30"
+        >
+            {/* Header */}
+            <div className="relative p-6 md:p-8 border-b border-cyan-glow/20 bg-black/40 flex items-center pt-24 md:pt-8">
+                <button
+                    onClick={onBack}
+                    className="mr-6 p-2 text-cyan-glow hover:text-white hover:bg-white/10 rounded-full transition-all"
+                >
+                    <ChevronLeft size={32} />
+                </button>
+                <div>
+                    <h2 className="text-3xl font-orbitron text-white tracking-widest uppercase">{planet}</h2>
+                    <span className="text-xs text-cyan-glow tracking-[0.3em] font-mono">SURFACE EXPLORER</span>
+                </div>
+            </div>
+
+            <div className="p-6 md:p-8 overflow-y-auto h-[calc(100vh-140px)]">
+                <SurfaceTab planet={planet} />
+            </div>
+        </motion.div>
+    );
+}
+
 // Stage 4: Planet Switcher
 function PlanetSwitcher({ onSelect, onBack }: { onSelect: (planet: string) => void; onBack: () => void }) {
     const planets = [
@@ -339,7 +373,7 @@ function PlanetSwitcher({ onSelect, onBack }: { onSelect: (planet: string) => vo
 export function PlanetSidebar() {
     const { selectedPlanet, closeSidebar, setIsVisiting, setSelectedPlanet } = useSidebarStore();
     const { mode } = useAppStore();
-    const [viewState, setViewState] = useState<'mini' | 'menu' | 'details' | 'switcher'>('mini');
+    const [viewState, setViewState] = useState<'mini' | 'menu' | 'details' | 'switcher' | 'surface'>('mini');
     const [detailType, setDetailType] = useState<'encyclopedia' | 'structure'>('encyclopedia');
     const pathname = usePathname();
 
@@ -375,14 +409,26 @@ export function PlanetSidebar() {
                     key="menu"
                     planet={selectedPlanet}
                     onViewChange={(type) => {
-                        setDetailType(type as any);
-                        setViewState('details');
+                        if (type === 'surface') {
+                            setViewState('surface');
+                        } else {
+                            setDetailType(type as any);
+                            setViewState('details');
+                        }
                     }}
                     onVisit={() => {
                         setIsVisiting(true);
                     }}
                     onSwitch={() => setViewState('switcher')}
                     onReset={() => closeSidebar()}
+                />
+            )}
+
+            {viewState === 'surface' && (
+                <SurfaceView
+                    key="surface"
+                    planet={selectedPlanet}
+                    onBack={() => setViewState('menu')}
                 />
             )}
 

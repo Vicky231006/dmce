@@ -16,6 +16,7 @@ import { StarLifeCycleScene } from './lessons/StarLifeCycleScene';
 import { PlanetFormationScene } from './lessons/PlanetFormationScene';
 import { GravityOrbitsScene } from './lessons/GravityOrbitsScene';
 import { SearchForLifeScene } from './lessons/SearchForLifeScene';
+import { DarkMatterScene } from './lessons/DarkMatterScene';
 
 interface LessonContainerProps {
     lesson: Lesson;
@@ -98,6 +99,7 @@ export function LessonContainer({ lesson, onExit }: LessonContainerProps) {
                     {lesson.id === 'planet-formation' && <PlanetFormationScene currentTime={currentTime} />}
                     {lesson.id === 'gravity-orbits' && <GravityOrbitsScene currentTime={currentTime} />}
                     {lesson.id === 'search-life' && <SearchForLifeScene currentTime={currentTime} />}
+                    {lesson.id === 'dark-matter' && <DarkMatterScene currentTime={currentTime} />}
                 </group>
 
                 <AnimationController

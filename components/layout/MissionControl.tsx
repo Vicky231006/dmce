@@ -1,8 +1,8 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAppStore } from '@/lib/store';
-import { useState, useRef, useEffect } from 'react';
+import { useAppStore, AppState } from '@/lib/store';
+import { useState, useRef, useEffect, ChangeEvent, KeyboardEvent } from 'react';
 import { Send, X, Sparkles } from 'lucide-react';
 import { GlowButton } from '@/components/ui/GlowButton';
 
@@ -106,8 +106,8 @@ export function MissionControl() {
                             >
                                 <div
                                     className={`max-w-[80%] p-4 rounded-lg ${message.role === 'user'
-                                            ? 'bg-cyan-glow/20 border border-cyan-glow/30'
-                                            : 'bg-white/5 border border-white/10'
+                                        ? 'bg-cyan-glow/20 border border-cyan-glow/30'
+                                        : 'bg-white/5 border border-white/10'
                                         }`}
                                 >
                                     <p className="text-sm text-star-white leading-relaxed">

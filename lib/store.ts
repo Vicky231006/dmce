@@ -2,37 +2,45 @@ import { create } from 'zustand';
 import * as THREE from 'three';
 
 // --- App State ---
-interface AppState {
+export interface AppState {
     mode: 'explore' | 'dashboard' | 'mission' | 'education';
     timelineIndex: number;
+    timelineMode: 'past' | 'future';
     isNeoOverlayOpen: boolean;
     // Dashboard Global State for AI Context
     dashboardOverlay: 'none' | 'calendar' | 'weather' | 'satellite';
     selectedCalendarEvent: any | null; // Using any to avoid circular dependency with calendarData for now
     selectedSatelliteImpact: any | null;
+    isNightSkyMode: boolean; // Toggle to hide Solar System view
 
     setMode: (mode: AppState['mode']) => void;
     setTimelineIndex: (index: number) => void;
+    setTimelineMode: (mode: 'past' | 'future') => void;
     setNeoOverlayOpen: (isOpen: boolean) => void;
     setDashboardOverlay: (overlay: AppState['dashboardOverlay']) => void;
     setSelectedCalendarEvent: (event: any | null) => void;
     setSelectedSatelliteImpact: (impact: any | null) => void;
+    setNightSkyMode: (isNight: boolean) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
     mode: 'explore',
     timelineIndex: 0,
+    timelineMode: 'past',
     isNeoOverlayOpen: false,
     dashboardOverlay: 'none',
     selectedCalendarEvent: null,
     selectedSatelliteImpact: null,
+    isNightSkyMode: false,
 
     setMode: (mode) => set({ mode }),
     setTimelineIndex: (index) => set({ timelineIndex: index }),
+    setTimelineMode: (mode: 'past' | 'future') => set({ timelineMode: mode }),
     setNeoOverlayOpen: (isOpen) => set({ isNeoOverlayOpen: isOpen }),
     setDashboardOverlay: (overlay) => set({ dashboardOverlay: overlay }),
     setSelectedCalendarEvent: (event) => set({ selectedCalendarEvent: event }),
     setSelectedSatelliteImpact: (impact) => set({ selectedSatelliteImpact: impact }),
+    setNightSkyMode: (isNight) => set({ isNightSkyMode: isNight }),
 }));
 
 // --- Time Control State ---

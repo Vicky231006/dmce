@@ -39,84 +39,107 @@ export function AIChat() {
         scrollToBottom();
     }, [messages, isOpen]);
 
-    const handleSend = async () => {
-        if (!input.trim() || isLoading) return;
+    // Listen for external trigger events (e.g., from ConstellationInfo)
+    useEffect(() => {
+        const handleOpenAI = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            const { detail } = customEvent;
+            setIsOpen(true);
+
+            if (detail?.prompt) {
+                // Determine context string
+                const contextStr = detail.contextStr || `User initiated chat from external trigger.`;
+                handleSend(detail.prompt, contextStr);
+            } else {
+                // Just open
+            }
+        };
+
+        window.addEventListener('openAI', handleOpenAI);
+        return () => window.removeEventListener('openAI', handleOpenAI);
+    }, []);
+
+    const handleSend = async (manualMessage?: string, manualContext?: string) => {
+        const messageContent = manualMessage || input;
+        if (!messageContent.trim() || isLoading) return;
 
         const userMessage: Message = {
             role: 'user',
-            content: input,
+            content: messageContent,
             timestamp: Date.now()
         };
 
         setMessages(prev => [...prev, userMessage]);
-        setInput('');
+        if (!manualMessage) setInput(''); // clear input only if user typed it
         setIsLoading(true);
 
         try {
             // Context construction
-            let context = `User is in ${mode} mode.`;
+            let context = manualContext || `User is in ${mode} mode.`;
             let timelineEvent = null;
 
-            if (mode === 'explore' && selectedPlanet) {
-                context += ` Viewing planet: ${selectedPlanet}.`;
-            } else if (mode === 'mission') {
-                // Import dynamically to avoid circular dependencies if possible, or just use the static data
-                const { SPACE_TIMELINE_EVENTS } = await import('@/lib/timelineData');
-                const event = SPACE_TIMELINE_EVENTS[timelineIndex];
-                if (event) {
-                    context += ` Viewing timeline event: ${event.title} (${event.year}).`;
-                    timelineEvent = event;
-                }
-            } else if (mode === 'dashboard') {
-                // Fetch current dashboard data to provide context
-                try {
-                    const [neoRes, issRes, marsRes, apodRes, weatherRes] = await Promise.all([
-                        fetch('/api/space/neo'),
-                        fetch('/api/space/iss'),
-                        fetch('/api/space/mars'),
-                        fetch('/api/space/apod'),
-                        fetch('/api/space/weather')
-                    ]);
-
-                    const neo = await neoRes.json();
-                    const iss = await issRes.json();
-                    const mars = await marsRes.json();
-                    const apod = await apodRes.json();
-                    const weather = await weatherRes.json();
-
-                    context += ` Viewing Mission Dashboard.
-                    - APOD: ${apod.title} (${apod.explanation.substring(0, 100)}...)
-                    - NEOs: ${neo.element_count} objects detected today.
-                    - ISS Location: Lat ${iss.latitude?.toFixed(2)}, Lon ${iss.longitude?.toFixed(2)}.
-                    - Mars: Latest photo from ${mars.photos?.[0]?.rover?.name} (Sol ${mars.photos?.[0]?.sol}).`;
-
-                    // Add Overlay Specific Context
-                    if (dashboardOverlay === 'calendar') {
-                        context += `\nUser has the Astronomical Calendar open.`;
-                        if (selectedCalendarEvent) {
-                            context += `\nUser is viewing details for event: ${selectedCalendarEvent.title} on ${selectedCalendarEvent.date}.
-                            - Type: ${selectedCalendarEvent.type}
-                            - Description: ${selectedCalendarEvent.description}
-                            - Visibility: ${selectedCalendarEvent.visibility || 'Global'}`;
-                        }
-                    } else if (dashboardOverlay === 'weather') {
-                        context += `\nUser has the Cosmic Weather panel open.
-                        - Solar Storm Status: ${weather.solarStorms.status} (KP: ${weather.solarStorms.kpIndex})
-                        - Aurora Forecast: ${weather.auroraForecast.probability} probability in ${weather.auroraForecast.visibility}
-                        - Radiation Level: ${weather.radiation.level}`;
-                    } else if (dashboardOverlay === 'satellite') {
-                        context += `\nUser has the Satellite Contributions panel open.`;
-                        if (selectedSatelliteImpact) {
-                            context += `\nUser is viewing impact analysis for: ${selectedSatelliteImpact.title}.
-                            - Value: ${selectedSatelliteImpact.value}
-                            - Description: ${selectedSatelliteImpact.description}`;
-                        }
-                    } else if (isNeoOverlayOpen) {
-                        context += `\nUser has the Near-Earth Objects (NEO) overlay open.`;
+            if (!manualContext) {
+                if (mode === 'explore' && selectedPlanet) {
+                    context += ` Viewing planet: ${selectedPlanet}.`;
+                } else if (mode === 'mission') {
+                    // Import dynamically to avoid circular dependencies if possible, or just use the static data
+                    const { SPACE_TIMELINE_EVENTS } = await import('@/lib/timelineData');
+                    const event = SPACE_TIMELINE_EVENTS[timelineIndex];
+                    if (event) {
+                        context += ` Viewing timeline event: ${event.title} (${event.year}).`;
+                        timelineEvent = event;
                     }
+                } else if (mode === 'dashboard') {
+                    // Fetch current dashboard data to provide context
+                    try {
+                        const [neoRes, issRes, marsRes, apodRes, weatherRes] = await Promise.all([
+                            fetch('/api/space/neo'),
+                            fetch('/api/space/iss'),
+                            fetch('/api/space/mars'),
+                            fetch('/api/space/apod'),
+                            fetch('/api/space/weather')
+                        ]);
 
-                } catch (e) {
-                    context += ` Viewing Mission Dashboard (Data unavailable).`;
+                        const neo = await neoRes.json();
+                        const iss = await issRes.json();
+                        const mars = await marsRes.json();
+                        const apod = await apodRes.json();
+                        const weather = await weatherRes.json();
+
+                        context += ` Viewing Mission Dashboard.
+                        - APOD: ${apod.title} (${apod.explanation.substring(0, 100)}...)
+                        - NEOs: ${neo.element_count} objects detected today.
+                        - ISS Location: Lat ${iss.latitude?.toFixed(2)}, Lon ${iss.longitude?.toFixed(2)}.
+                        - Mars: Latest photo from ${mars.photos?.[0]?.rover?.name} (Sol ${mars.photos?.[0]?.sol}).`;
+
+                        // Add Overlay Specific Context
+                        if (dashboardOverlay === 'calendar') {
+                            context += `\nUser has the Astronomical Calendar open.`;
+                            if (selectedCalendarEvent) {
+                                context += `\nUser is viewing details for event: ${selectedCalendarEvent.title} on ${selectedCalendarEvent.date}.
+                                - Type: ${selectedCalendarEvent.type}
+                                - Description: ${selectedCalendarEvent.description}
+                                - Visibility: ${selectedCalendarEvent.visibility || 'Global'}`;
+                            }
+                        } else if (dashboardOverlay === 'weather') {
+                            context += `\nUser has the Cosmic Weather panel open.
+                            - Solar Storm Status: ${weather.solarStorms.status} (KP: ${weather.solarStorms.kpIndex})
+                            - Aurora Forecast: ${weather.auroraForecast.probability} probability in ${weather.auroraForecast.visibility}
+                            - Radiation Level: ${weather.radiation.level}`;
+                        } else if (dashboardOverlay === 'satellite') {
+                            context += `\nUser has the Satellite Contributions panel open.`;
+                            if (selectedSatelliteImpact) {
+                                context += `\nUser is viewing impact analysis for: ${selectedSatelliteImpact.title}.
+                                - Value: ${selectedSatelliteImpact.value}
+                                - Description: ${selectedSatelliteImpact.description}`;
+                            }
+                        } else if (isNeoOverlayOpen) {
+                            context += `\nUser has the Near-Earth Objects (NEO) overlay open.`;
+                        }
+
+                    } catch (e) {
+                        context += ` Viewing Mission Dashboard (Data unavailable).`;
+                    }
                 }
             }
 
@@ -177,8 +200,7 @@ export function AIChat() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className={`fixed bottom-24 md:bottom-8 z-[60] w-14 h-14 md:w-16 md:h-16 rounded-full bg-cyan-glow/20 backdrop-blur-md border border-cyan-glow/50 flex items-center justify-center shadow-[0_0_30px_rgba(0,240,255,0.3)] hover:shadow-[0_0_50px_rgba(0,240,255,0.5)] transition-all duration-500 group 
-                ${((mode === 'dashboard' && !isNeoOverlayOpen) || mode === 'education') ? 'left-4 md:left-8' : 'right-4 md:right-8'}`}
+                className={`fixed bottom-24 md:bottom-8 z-[100] w-14 h-14 md:w-16 md:h-16 rounded-full bg-cyan-glow/20 backdrop-blur-md border border-cyan-glow/50 flex items-center justify-center shadow-[0_0_30px_rgba(0,240,255,0.3)] hover:shadow-[0_0_50px_rgba(0,240,255,0.5)] transition-all duration-500 group left-4 md:left-8`}
             >
                 <div className="absolute inset-0 rounded-full border border-cyan-glow/30 animate-ping opacity-20" />
                 <Sparkles size={28} className="text-cyan-glow group-hover:text-white transition-colors" />
@@ -192,8 +214,7 @@ export function AIChat() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className={`fixed bottom-40 md:bottom-28 w-[90vw] md:w-[400px] h-[50vh] md:h-[600px] z-[60] bg-deep-space/95 backdrop-blur-xl border border-cyan-glow/30 rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-500 
-                        ${((mode === 'dashboard' && !isNeoOverlayOpen) || mode === 'education') ? 'left-4 md:left-8' : 'right-4 md:right-8'}`}
+                        className={`fixed bottom-40 md:bottom-28 w-[90vw] md:w-[400px] h-[50vh] md:h-[600px] z-[100] bg-deep-space/95 backdrop-blur-xl border border-cyan-glow/30 rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-500 left-4 md:left-8`}
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between p-4 border-b border-cyan-glow/20 bg-white/5">
@@ -281,7 +302,7 @@ export function AIChat() {
                                     disabled={isLoading}
                                 />
                                 <button
-                                    onClick={handleSend}
+                                    onClick={() => handleSend()}
                                     disabled={!input.trim() || isLoading}
                                     className="p-2.5 rounded-xl bg-cyan-glow/20 text-cyan-glow hover:bg-cyan-glow hover:text-deep-space disabled:opacity-50 disabled:hover:bg-cyan-glow/20 disabled:hover:text-cyan-glow transition-all"
                                 >

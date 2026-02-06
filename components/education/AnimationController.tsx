@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Lesson, LessonAnimation } from '@/lib/lessonData';
 
@@ -13,7 +13,19 @@ interface AnimationControllerProps {
 }
 
 export function AnimationController({ lesson, currentTime, isPaused, sceneRef }: AnimationControllerProps) {
+    const { camera } = useThree();
     const activeAnimations = useRef<Map<string, any>>(new Map());
+
+    // Camera animation state
+    const cameraAnimRef = useRef<{
+        active: boolean;
+        startPos: THREE.Vector3;
+        endPos: THREE.Vector3;
+        startLookAt: THREE.Vector3;
+        endLookAt: THREE.Vector3;
+        startTime: number;
+        duration: number;
+    } | null>(null);
 
     useEffect(() => {
         // Find animations that should be active at currentTime
@@ -30,17 +42,15 @@ export function AnimationController({ lesson, currentTime, isPaused, sceneRef }:
             }
         });
 
-        // Clean up finished animations
-        // Note: In a real engine we might want to "fast forward" state if skipping, 
-        // but for this prototype we'll just trigger/cleanup based on time windows.
     }, [currentTime, lesson]);
 
     const triggerAnimation = (anim: LessonAnimation) => {
-        if (!sceneRef.current) return;
-
         switch (anim.type) {
             case 'particle-burst':
-                createParticleBurst(anim.params);
+                if (sceneRef.current) createParticleBurst(anim.params, sceneRef.current);
+                break;
+            case 'camera-move':
+                startCameraMove(anim.params);
                 break;
             case 'universe-expand':
                 // Handled by scene specific logic or global uniform updates
@@ -49,7 +59,26 @@ export function AnimationController({ lesson, currentTime, isPaused, sceneRef }:
         }
     };
 
-    const createParticleBurst = (params: any) => {
+    const startCameraMove = (params: any) => {
+        const startPos = camera.position.clone();
+        const endPos = params.position ? new THREE.Vector3(...params.position) : startPos;
+
+        // Assume looking at 0,0,0 or handling lookAt if provided
+        const currentLookAt = new THREE.Vector3(0, 0, 0); // Simplified assumption or track it
+        const endLookAt = params.lookAt ? new THREE.Vector3(...params.lookAt) : new THREE.Vector3(0, 0, 0);
+
+        cameraAnimRef.current = {
+            active: true,
+            startPos,
+            endPos,
+            startLookAt: currentLookAt,
+            endLookAt,
+            startTime: Date.now(),
+            duration: params.duration * 1000
+        };
+    };
+
+    const createParticleBurst = (params: any, scene: THREE.Group) => {
         const geometry = new THREE.BufferGeometry();
         const positions = new Float32Array(params.count * 3);
         const velocities = new Float32Array(params.count * 3);
@@ -88,11 +117,30 @@ export function AnimationController({ lesson, currentTime, isPaused, sceneRef }:
             duration: params.duration * 1000
         };
 
-        sceneRef.current?.add(particles);
+        scene.add(particles);
     };
 
     useFrame((state, delta) => {
-        if (isPaused || !sceneRef.current) return;
+        if (isPaused) return;
+
+        // Update Camera
+        if (cameraAnimRef.current && cameraAnimRef.current.active) {
+            const anim = cameraAnimRef.current;
+            const elapsed = Date.now() - anim.startTime;
+            const progress = Math.min(elapsed / anim.duration, 1);
+
+            // Ease out cubic
+            const ease = 1 - Math.pow(1 - progress, 3);
+
+            camera.position.lerpVectors(anim.startPos, anim.endPos, ease);
+            // camera.lookAt(new THREE.Vector3().lerpVectors(anim.startLookAt, anim.endLookAt, ease)); // Optional if controls don't override
+
+            if (progress >= 1) {
+                cameraAnimRef.current = null;
+            }
+        }
+
+        if (!sceneRef.current) return;
 
         // Update particles
         sceneRef.current.children.forEach((child) => {
