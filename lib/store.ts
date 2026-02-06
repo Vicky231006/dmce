@@ -5,6 +5,7 @@ import * as THREE from 'three';
 export interface AppState {
     mode: 'explore' | 'dashboard' | 'mission' | 'education';
     timelineIndex: number;
+    timelineMode: 'past' | 'future';
     isNeoOverlayOpen: boolean;
     // Dashboard Global State for AI Context
     dashboardOverlay: 'none' | 'calendar' | 'weather' | 'satellite';
@@ -13,6 +14,7 @@ export interface AppState {
 
     setMode: (mode: AppState['mode']) => void;
     setTimelineIndex: (index: number) => void;
+    setTimelineMode: (mode: 'past' | 'future') => void;
     setNeoOverlayOpen: (isOpen: boolean) => void;
     setDashboardOverlay: (overlay: AppState['dashboardOverlay']) => void;
     setSelectedCalendarEvent: (event: any | null) => void;
@@ -22,6 +24,7 @@ export interface AppState {
 export const useAppStore = create<AppState>((set) => ({
     mode: 'explore',
     timelineIndex: 0,
+    timelineMode: 'past',
     isNeoOverlayOpen: false,
     dashboardOverlay: 'none',
     selectedCalendarEvent: null,
@@ -29,6 +32,7 @@ export const useAppStore = create<AppState>((set) => ({
 
     setMode: (mode) => set({ mode }),
     setTimelineIndex: (index) => set({ timelineIndex: index }),
+    setTimelineMode: (mode: 'past' | 'future') => set({ timelineMode: mode }),
     setNeoOverlayOpen: (isOpen) => set({ isNeoOverlayOpen: isOpen }),
     setDashboardOverlay: (overlay) => set({ dashboardOverlay: overlay }),
     setSelectedCalendarEvent: (event) => set({ selectedCalendarEvent: event }),

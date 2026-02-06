@@ -236,3 +236,119 @@ export const SPACE_TIMELINE_EVENTS: TimelineEvent[] = [
         category: "deep-space"
     }
 ];
+
+export const FUTURE_TIMELINE_EVENTS: TimelineEvent[] = [
+    {
+        year: 2026,
+        title: "Artemis II - Crewed Lunar Flyby",
+        description: "NASA's Artemis II will be the first crewed mission to the Moon since 1972. A crew of four will perform a 10-day lunar flyby to validate the Orion spacecraft's life support systems before landing missions begin.",
+        facts: [
+            "Crew: Wiseman, Glover, Koch, Hansen",
+            "Launch: No Earlier Than (NET) March 2026",
+            "First woman and person of color on a lunar mission",
+            "Mission Duration: ~10 days"
+        ],
+        videoUrl: "https://www.youtube.com/embed/uPOjG7Nc-Ps",
+        videoId: "uPOjG7Nc-Ps",
+        thumbnail: "https://img.youtube.com/vi/uPOjG7Nc-Ps/maxresdefault.jpg",
+        significance: "critical",
+        category: "human-spaceflight"
+    },
+    {
+        year: 2026,
+        title: "MMX - Martian Moons eXploration",
+        description: "JAXA's MMX mission will explore Mars' moons, Phobos and Deimos. It aims to land on Phobos, deploy a rover (IDEFIX), and return samples to Earth to determine the moons' origins.",
+        facts: [
+            "Launch: Late 2026",
+            "First sample return from a Martian moon",
+            "Carries French-German rover 'IDEFIX'",
+            "Sample Return to Earth: ~2031"
+        ],
+        videoUrl: "https://www.youtube.com/embed/-a0e8AKOWg0",
+        videoId: "-a0e8AKOWg0",
+        thumbnail: "https://img.youtube.com/vi/-a0e8AKOWg0/maxresdefault.jpg",
+        significance: "major",
+        category: "deep-space"
+    },
+    {
+        year: 2027,
+        title: "Gaganyaan - India's Crewed Mission",
+        description: "ISRO's first crewed spaceflight mission. It will launch 3 astronauts into a 400 km orbit for a 3-day mission, demonstrating India's human spaceflight capability.",
+        facts: [
+            "Launch: Planned for 2027 (Uncrewed G1 in 2026)",
+            "Launch Vehicle: LVM3 (Human Rated)",
+            "Crew Module: 5.3 metric tons",
+            "Splashdown: Indian Ocean"
+        ],
+        videoUrl: "https://www.youtube.com/embed/aTQ2EZYtJ04",
+        videoId: "aTQ2EZYtJ04",
+        thumbnail: "https://img.youtube.com/vi/aTQ2EZYtJ04/maxresdefault.jpg",
+        significance: "critical",
+        category: "human-spaceflight"
+    },
+    {
+        year: 2028,
+        title: "Chandrayaan-4 - Lunar Sample Return",
+        description: "ISRO's ambitious mission to collect and return lunar soil to Earth. Unlike previous missions, Chandrayaan-4 involves a complex multi-launch architecture where different modules will launch separately and dock in lunar orbit before descending to the surface.",
+        facts: [
+            "First Indian mission to bring back lunar soil",
+            "Involves two separate LVM3 rocket launches",
+            "Modules will dock and undock in lunar orbit",
+            "Targeting the lunar South Pole region (Shiv Shakti Point area)"
+        ],
+        videoUrl: "https://www.youtube.com/embed/GIsjx78A-Xg",
+        videoId: "GIsjx78A-Xg",
+        thumbnail: "https://img.youtube.com/vi/GIsjx78A-Xg/maxresdefault.jpg",
+        significance: "critical",
+        category: "deep-space"
+    },
+    {
+        year: 2028,
+        title: "Dragonfly - Titan Rotorcraft",
+        description: "NASA's nuclear-powered drone will fly on Saturn's moon Titan. It will hop between locations to analyze the moon's prebiotic chemistry and dense atmosphere.",
+        facts: [
+            "Launch: July 2028",
+            "First powered flight on another planet's moon",
+            "Nuclear powered (MMRTG)",
+            "Titan has a dense nitrogen atmosphere"
+        ],
+        videoUrl: "https://www.youtube.com/embed/QBsoAw3kdsc",
+        videoId: "QBsoAw3kdsc",
+        thumbnail: "https://img.youtube.com/vi/QBsoAw3kdsc/maxresdefault.jpg",
+        significance: "major",
+        category: "deep-space"
+    },
+    {
+        year: 2028,
+        title: "Tianwen-3 - Mars Sample Return",
+        description: "China's ambitious mission to collect Martian surface samples and return them to Earth. If successful, it could be the first mission to bring Mars rocks back to humanity.",
+        facts: [
+            "Launch: Late 2028",
+            "Two launches: Lander & Orbiter",
+            "Uses robotic arm and drill",
+            "Sample Return: ~2031"
+        ],
+        videoUrl: "https://www.youtube.com/embed/jdMQAfEIE0k",
+        videoId: "jdMQAfEIE0k",
+        thumbnail: "https://img.youtube.com/vi/jdMQAfEIE0k/maxresdefault.jpg",
+        significance: "critical",
+        category: "deep-space"
+    },
+    {
+        year: 2028,
+        title: "ExoMars - Rosalind Franklin Rover",
+        description: "ESA's rover will search for signs of past life on Mars. It features a unique drill capable of extracting samples from 2 meters deep, protecting them from surface radiation.",
+        facts: [
+            "Launch: Late 2028 (with NASA partnership)",
+            "Drill Depth: 2 meters (6.5 ft)",
+            "Landing Site: Oxia Planum",
+            "Laboratory: Onboard molecular analysis"
+        ],
+        videoUrl: "https://www.youtube.com/embed/22H-it-R--I",
+        videoId: "22H-it-R--I",
+        thumbnail: "https://img.youtube.com/vi/22H-it-R--I/maxresdefault.jpg",
+        significance: "major",
+        category: "deep-space"
+    }
+];
+
